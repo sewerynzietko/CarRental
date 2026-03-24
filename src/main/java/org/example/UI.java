@@ -1,9 +1,6 @@
 package org.example;
 
-import org.example.authentication.Authentication;
-import org.example.authentication.IUserRepository;
-import org.example.authentication.User;
-import org.example.authentication.UserRepository;
+import org.example.authentication.*;
 import org.example.renting.IVehicleRepository;
 import org.example.renting.Vehicle;
 import org.example.renting.VehicleRepositoryImpl;
@@ -24,37 +21,56 @@ public class UI {
         this.sc = new Scanner(System.in);
     }
 
-    User authenticateUser(){
+    void authenticateUser(){
         User user = null;
-        System.out.println("\n=== WYPOŻYCZALNIA POJAZDÓW ===");
-        System.out.println("1 - Zaloguj się.");
-        System.out.println("2 - Wyjscie");
-        System.out.print("Wybierz opcję: ");
-        int i = sc.nextInt();
-        switch (i) {
-            case 1 -> {
-                System.out.print("Podaj login: ");
-                sc.nextLine();
-                String login = sc.nextLine();
-                if (userRepository.getUser(login) == null) {
-                    System.out.println("Użytkownik nie istnieje.");
-                } else {
-                    for (int j = 0; j < 3; j++) {
-                        System.out.print("Podaj hasło: ");
-                        user = authentication.authenticate(login, sc.nextLine());
-                        if (user == null) {
-                            System.out.println("Hasło nie poprawne");
-                        } else return user;
-                    }
+        while (true) {
+            System.out.println("\n=== WYPOŻYCZALNIA POJAZDÓW ===");
+            System.out.println("1 - Zaloguj się.");
+            System.out.println("2 - Zarejestruj się");
+            System.out.println("3 - Wyjscie");
+            System.out.print("Wybierz opcję: ");
+            int i = sc.nextInt();
+            switch (i) {
+                case 1 -> {
+                    System.out.print("Podaj login: ");
+                    sc.nextLine();
+                    String login = sc.nextLine();
+                    if (userRepository.getUser(login) == null) {
+                        System.out.println("Użytkownik nie istnieje.");
+                    } else {
+                        for (int j = 0; j < 3; j++) {
+                            System.out.print("Podaj hasło: ");
+                            user = authentication.authenticate(login, sc.nextLine());
+                            if (user == null) {
+                                System.out.println("Hasło nie poprawne");
+                            }
+                        }
                         System.out.println("Hasło podane nie poprawnie 3 razy.");
                         System.out.println("Spróbuj ponownie.");
+                    }
+                }
+                case 2 -> {
+                    System.out.print("Podaj login: ");
+                    sc.nextLine();
+                    String login = sc.nextLine();
+                    if (userRepository.getUser(login) != null) {
+                        System.out.println("Użytkownik już istnieje.");
+                    } else {
+                        System.out.print("Podaj hasło: ");
+                        String passwordHash = Authentication.hashPassword(sc.nextLine());
+                        System.out.print("Podaj ponownie hasło: ");
+                        if (passwordHash.equals(Authentication.hashPassword(sc.nextLine()))) {
+                            User newUser = new User(login, passwordHash, Role.USER);
+                            userRepository.addUser(newUser);
+                            System.out.println("Zostałeś zarejestrowany.");
+                        } else {
+                            System.out.println("Hasła nie zgadzają się.");
+                            System.out.println("Spróbuj zarejestrować się ponownie.");
+                        }
+                    }
                 }
             }
-            case 2 -> {
-                return null;
-            }
         }
-        return null;
     }
 
     boolean functions(User user){

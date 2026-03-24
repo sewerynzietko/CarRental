@@ -28,7 +28,6 @@ public class UserRepository implements IUserRepository{
         return new ArrayList<>(users);
     }
 
-    @Override
     public void save ( ) {
         StringBuilder str = new StringBuilder();
         try(BufferedWriter writer = new BufferedWriter
@@ -43,7 +42,6 @@ public class UserRepository implements IUserRepository{
         }
     }
 
-    @Override
     public void load ( ) {
         File file = new File("users.csv");
         try(Scanner myReader = new Scanner(file)){
@@ -62,10 +60,14 @@ public class UserRepository implements IUserRepository{
             System.out.println("An error occurred: " + e);
         }
     }
-
+    @Override
+    public void addUser (User user){
+        users.add(user);
+    }
     @Override
     public boolean update () {
         return false; //update aktualizuje pojazd w repo bo getuser zwraca kopie
     }
+
 
 }

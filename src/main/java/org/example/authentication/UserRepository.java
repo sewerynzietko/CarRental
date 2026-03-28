@@ -25,7 +25,11 @@ public class UserRepository implements IUserRepository{
 
     @Override
     public List<User> getUsers () {
-        return new ArrayList<>(users);
+        List<User> copies = new ArrayList<>();
+        for(User u : users) {
+            copies.add(new User(u));
+        }
+        return copies;
     }
 
     @Override
@@ -37,7 +41,6 @@ public class UserRepository implements IUserRepository{
                 str.append(user.toCsv()).append("\n");
             }
             writer.write(str.toString());
-            System.out.println("Użytkownicy zapisani.");
         } catch (IOException e) {
             System.out.println("An error occurred: " + e);
         }
@@ -57,15 +60,20 @@ public class UserRepository implements IUserRepository{
                 if (data.length == 4) user.setRentedVehicleId(data[3]);
                 users.add(user);
             }
-            System.out.println("Użytkownicy załadowani.");
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred: " + e);
         }
     }
 
     @Override
-    public boolean update () {
-        return false; //update aktualizuje pojazd w repo bo getuser zwraca kopie
+    public boolean update (User updatedUser) {
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getLogin().equals(updatedUser.getLogin())) {
+                users.set(i, updatedUser);
+                save();
+                return true;
+            }
+        }
+        return false;
     }
-
 }

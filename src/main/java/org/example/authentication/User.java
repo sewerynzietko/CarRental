@@ -39,7 +39,8 @@ public class User {
     }
 
     public String toCsv(){
+        String vehicleIdStr = (rentedVehicleId != null) ? rentedVehicleId : "";
         return login + ';' + passwordHash +
-                ';' + role + ';' + rentedVehicleId;
+                ';' + role + ';' + vehicleIdStr;
     }
 }

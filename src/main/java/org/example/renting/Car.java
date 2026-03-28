@@ -16,14 +16,13 @@ public class Car extends Vehicle {
 
     @Override
     public String toString() {
-        return "Car{" +
-                "id='" + id + '\'' +
-                ", rented=" + rented +
-                ", price=" + price +
-                ", year=" + year +
-                ", model='" + model + '\'' +
-                ", brand='" + brand + '\'' +
-                '}';
+        return "Car: " +
+                "id: " + id +
+                ", rented: " + rented +
+                ", price: " + price +
+                ", year: " + year +
+                ", model: " + model +
+                ", brand: " + brand;
     }
 
     @Override

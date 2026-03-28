@@ -22,15 +22,14 @@ public class Motorcycle extends Vehicle {
 
     @Override
     public String toString() {
-        return "Motorcycle{" +
-                "id='" + id + '\'' +
-                ", rented=" + rented +
-                ", category='" + category + '\'' +
-                ", brand='" + brand + '\'' +
-                ", model='" + model + '\'' +
-                ", year=" + year +
-                ", price=" + price +
-                '}';
+        return "Motorcycle: " +
+                "id:" + id +
+                ", rented:" + rented +
+                ", category:" + category +
+                ", brand:" + brand +
+                ", model:" + model +
+                ", year:" + year +
+                ", price:" + price;
     }
 
     @Override

@@ -13,12 +13,8 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
         for( Vehicle vehicle : vehicles ){
             if(vehicle.getId().equals(id)){
                 if(!vehicle.isRented()){
-                    System.out.println("Wyporzyczono pojazd.");
                     vehicle.setRented(true);
-                    save("vehicles.txt");
-                }
-                else {
-                    System.out.println("Nie można wyporzyczyć pojazdu, pojazd jest już wyporzyczony!");
+                    save("vehicles.csv");
                 }
                 break;
             }
@@ -31,15 +27,11 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
             if(vehicle.getId().equals(id)) {
                 if(vehicle.isRented()) {
                     vehicle.setRented(false);
-                    save("vehicles.txt");
+                    save("vehicles.csv");
                     return;
-                }
-                else{
-                    System.out.println("Pojazd nie był wyporzyczony.");
                 }
             }
         }
-        System.out.println("Nie znaleziono pojazdu.");
     }
 
     @Override
@@ -59,7 +51,6 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
                 str.append(vehicle.toCsv()).append("\n");
             }
             writer.write(str.toString());
-            System.out.println("Pojazdy zapisane.");
         } catch (IOException e) {
             System.out.println("An error occurred: " + e);
         }
@@ -85,7 +76,6 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
                     vehicles.add(motorcycle);
                 }
             }
-            System.out.println("Pojazdy załadowane.");
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred: " + e);
         }
@@ -94,16 +84,11 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
     @Override
     public void add ( Vehicle vehicle ) {
         vehicles.add(vehicle);
-        System.out.println("Dodano nowy pojazd");
     }
 
     @Override
     public void remove ( String id ) {
-        for( Vehicle vehicle : vehicles ) {
-            if (vehicle.getId().equals(id)) {
-                vehicles.remove(vehicle);
-            }
-        }
+        vehicles.removeIf(vehicle -> vehicle.getId().equals(id));
     }
 
     @Override
@@ -118,6 +103,6 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
 
     public VehicleRepositoryImpl ( ) {
         vehicles = new ArrayList<>();
-        load("vehicles.txt");
+        load("vehicles.csv");
     }
 }

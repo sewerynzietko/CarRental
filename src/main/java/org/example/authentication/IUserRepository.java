@@ -7,5 +7,5 @@ public interface IUserRepository {
     List<User> getUsers();
     void save();
     void load();
-    boolean update();
+    boolean update(User updatedUser);
 }

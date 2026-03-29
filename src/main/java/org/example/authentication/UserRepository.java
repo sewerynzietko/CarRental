@@ -25,7 +25,11 @@ public class UserRepository implements IUserRepository{
 
     @Override
     public List<User> getUsers () {
-        return new ArrayList<>(users);
+        List<User> copies = new ArrayList<>();
+        for(User u : users) {
+            copies.add(new User(u));
+        }
+        return copies;
     }
 
     public void save ( ) {
@@ -36,7 +40,6 @@ public class UserRepository implements IUserRepository{
                 str.append(user.toCsv()).append("\n");
             }
             writer.write(str.toString());
-            System.out.println("Użytkownicy zapisani.");
         } catch (IOException e) {
             System.out.println("An error occurred: " + e);
         }
@@ -55,19 +58,33 @@ public class UserRepository implements IUserRepository{
                 if (data.length == 4) user.setRentedVehicleId(data[3]);
                 users.add(user);
             }
-            System.out.println("Użytkownicy załadowani.");
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred: " + e);
         }
     }
+
     @Override
-    public void addUser (User user){
-        users.add(user);
-    }
-    @Override
-    public boolean update () {
-        return false; //update aktualizuje pojazd w repo bo getuser zwraca kopie
+    public boolean update (User updatedUser) {
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getLogin().equals(updatedUser.getLogin())) {
+                users.set(i, updatedUser);
+                save();
+                return true;
+            }
+        }
+        return false;
     }
 
+    @Override
+    public boolean addUser (User user){
+        boolean bool = users.add(user);
+        save();
+        return bool;
+    }
 
+    public boolean removeUser(User user) {
+        boolean bool = users.removeIf(u -> u.getLogin().equals(user.getLogin()));
+        save();
+        return bool;
+    }
 }

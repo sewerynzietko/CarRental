@@ -93,10 +93,13 @@ public class UI {
                     if(vehicleRepository.getVehicle(rentId).isRented()){
                         System.out.println("Podany pojazd został już wypożyczony");
                     } else {
-                        vehicleRepository.rentVehicle(rentId);
-                        user.setRentedVehicleId(rentId);
-                        userRepository.update(user);
-                        System.out.println("Wypożyczyłeś pojazd ID: " + rentId);
+                        if(vehicleRepository.rentVehicle(rentId)) {
+                            user.setRentedVehicleId(rentId);
+                            userRepository.update(user);
+                            System.out.println("Wypożyczyłeś pojazd ID: " + rentId);
+                        } else {
+                            System.out.println("Wystąpił problem podczas wypożyczania pojazdu.");
+                        }
                     }
                 } else {
                     System.out.println("Pojazd o takim ID nie istnieje");
@@ -105,10 +108,13 @@ public class UI {
             case "2":
                 if (user.getRentedVehicleId() != null) {
                     String vehicleId = user.getRentedVehicleId();
-                    vehicleRepository.returnVehicle(vehicleId);
-                    user.setRentedVehicleId(null);
-                    userRepository.update(user);
-                    System.out.println("Pojazd został zwrócony.");
+                    if(vehicleRepository.returnVehicle(vehicleId)) {
+                        user.setRentedVehicleId(null);
+                        userRepository.update(user);
+                        System.out.println("Pojazd został zwrócony.");
+                    } else {
+                        System.out.println("Wystąpił problem podczas zwracania pojazdu.");
+                    }
                 } else {
                     System.out.println("Nie masz żadnego pojazdu do zwrócenia.");
                 }
@@ -158,9 +164,12 @@ public class UI {
             case "3":
                 System.out.print("Podaj ID pojazdu do usunięcia: ");
                 String removeId = sc.nextLine();
-                vehicleRepository.remove(removeId);
-                vehicleRepository.save("vehicles.csv");
-                System.out.println("Pojazd o ID " + removeId + " został usunięty (jeśli istniał).");
+                if(vehicleRepository.remove(removeId)) {
+                    vehicleRepository.save();
+                    System.out.println("Pojazd o ID " + removeId + " został usunięty.");
+                } else {
+                    System.out.println("Wystąpił problem podczas usuwania pojazdu.");
+                }
                 break;
             case "4":
                 adminDisplayUsers();
@@ -206,17 +215,24 @@ public class UI {
 
             if (type.equals("1")) {
                 Car car = new Car(id, brand, model, year, price, false);
-                vehicleRepository.add(car);
-                System.out.println("Samochód został dodany!");
+                if(vehicleRepository.add(car)) {
+                    System.out.println("Samochód został dodany!");
+                } else {
+                    System.out.println("Nie udało się dodać pojazdu!");
+                }
             } else {
                 System.out.print("Podaj kategorię motocykla (np. AM, A1, A2, B, A): ");
                 String category = sc.nextLine();
                 Motorcycle motorcycle = new Motorcycle(id, brand, model, year, price, false, category);
-                vehicleRepository.add(motorcycle);
+                if(vehicleRepository.add(motorcycle)) {
+                    System.out.println("Motor został dodany!");
+                } else {
+                    System.out.println("Nie udało się dodać pojazdu!");
+                }
                 System.out.println("Motocykl został dodany!");
             }
 
-            vehicleRepository.save("vehicles.csv");
+            vehicleRepository.save();
 
         } catch (NumberFormatException e) {
             System.out.println("Błąd: Wprowadzono niepoprawny format liczby dla rocznika lub ceny!");

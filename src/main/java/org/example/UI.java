@@ -1,8 +1,6 @@
 package org.example;
 
 import org.example.old.Authentication;
-import org.example.old.Car;
-import org.example.old.Motorcycle;
 import org.example.repositories.UserRepository;
 import org.example.repositories.VehicleRepository;
 import org.example.repositories.impl.UserJsonRepository;

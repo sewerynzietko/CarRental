@@ -1,6 +1,5 @@
 package org.example;
 
-import org.example.old.Car;
 import org.example.repositories.VehicleRepository;
 import org.example.models.Vehicle;
 import org.example.repositories.impl.VehicleJsonRepository;

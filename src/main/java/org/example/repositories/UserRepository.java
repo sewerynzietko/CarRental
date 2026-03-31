@@ -3,11 +3,12 @@ package org.example.repositories;
 import org.example.models.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository {
-    User getUser( String login);
-    List<User> getUsers();
-    boolean update(User updatedUser);
-    boolean addUser(User user);
-    boolean removeUser(User user);
+    List<User> findAll();
+    Optional<User> findById(String id);
+    Optional<User> findByLogin( String login);
+    User save(User user);
+    void deleteById(String id);
 }

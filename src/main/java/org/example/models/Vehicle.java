@@ -1,37 +1,69 @@
 package org.example.models;
 
-public abstract class Vehicle {
-    protected String id;
-    protected String brand;
-    protected String model;
-    protected int year;
-    protected float price;
-    protected boolean rented;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-    public String getId () {
-        return id;
-    }
+import java.util.*;
 
-    public boolean isRented (){
-        return this.rented;
-    }
 
-    public void setRented ( boolean rent ){
-        this.rented = rent;
-    }
+@Getter
+@Setter
+@Builder
 
-    public Vehicle(String id, String brand, String model, int year, float price, boolean rented) {
+public class Vehicle {
+    private String id;
+    private String category;
+    private String brand;
+    private String model;
+    private int year;
+    private String plate;
+    private double price;
+
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+
+    private Map<String, Object> attributes = new HashMap<>();
+
+    public Vehicle(String id,
+                   String brand,
+                   String model,
+                   int year,
+                   String plate,
+                   double price,
+                   Map<String, Object> attributes) {
         this.id = id;
         this.brand = brand;
         this.model = model;
         this.year = year;
+        this.plate = plate;
         this.price = price;
-        this.rented = rented;
+        this.attributes = attributes == null ? new HashMap<>() : new HashMap<>(attributes);
     }
 
-    public abstract String toCsv ();
+    public Map<String, Object> getAttributes(){
+        return Collection.unmodifiableMap(attributes);
+    }
 
-    public abstract String toString ();
+    public Object getAttribute(String key){
+        return attributes.get(key);
+    }
 
-    public abstract Vehicle cloneVehicle();
+    public void addAttribute(String key, Object value){
+        attributes.put(key, value);
+    }
+
+    public Vehicle copy(){
+        return Vehicle.builder()
+                .id(id)
+                .category(category)
+                .brand(brand)
+                .model(model)
+                .year(year)
+                .plate(plate)
+                .price(price)
+                .attributes(new HashMap<>(attributes))
+                .build();
+    }
 }

@@ -1,94 +1,73 @@
 package org.example.repositories.impl;
 
+import com.google.gson.reflect.TypeToken;
+import org.example.db.JsonFileStorage;
 import org.example.models.Role;
 import org.example.models.User;
+import org.example.models.Vehicle;
 import org.example.repositories.UserRepository;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class UserJsonRepository implements UserRepository {
+
+    private final JsonFileStorage<User> storage =
+            new JsonFileStorage<>(
+                    "users.json",
+                    new TypeToken<List<User>>()
+                    {}.getType()
+            );
+
     private ArrayList<User> users;
 
     public UserJsonRepository () {
-        users = new ArrayList<>();
-        load();
+        users = new ArrayList<>(storage.load());
     }
 
-    @Override
-    public User getUser (String login) {
-        for(User user : users){
-            if(user.getLogin().equals(login)){
-                return new User(user);
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public List<User> getUsers () {
-        List<User> copies = new ArrayList<>();
+    public List<User> findAll () {
+        List<User> copy = new ArrayList<>();
         for(User u : users) {
-            copies.add(new User(u));
+            copy.add(u.copy());
         }
-        return copies;
-    }
-
-    public void save ( ) {
-        StringBuilder str = new StringBuilder();
-        try(BufferedWriter writer = new BufferedWriter
-                (new FileWriter("users.csv"))){
-            for ( User user : users ){
-                str.append(user.toCsv()).append("\n");
-            }
-            writer.write(str.toString());
-        } catch (IOException e) {
-            System.out.println("An error occurred: " + e);
-        }
-    }
-
-    public void load ( ) {
-        File file = new File("users.csv");
-        try(Scanner myReader = new Scanner(file)){
-            while(myReader.hasNextLine()) {
-                String line = myReader.nextLine();
-                String[] data = line.split(";");
-                Role role;
-                if (data[2].equals("USER")) role = Role.USER;
-                else role = Role.ADMIN;
-                User user = new User(data[0], data[1], role);
-                if (data.length == 4) user.setRentedVehicleId(data[3]);
-                users.add(user);
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred: " + e);
-        }
+        return copy;
     }
 
     @Override
-    public boolean update (User updatedUser) {
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getLogin().equals(updatedUser.getLogin())) {
-                users.set(i, updatedUser);
-                save();
-                return true;
-            }
-        }
-        return false;
+    public Optional<User> findById ( String id ) {
+        return users.stream()
+                .filter(user -> user.getId().equals(id))
+                .findFirst()
+                .map(User::copy);
     }
 
     @Override
-    public boolean addUser (User user){
-        boolean bool = users.add(user);
-        save();
-        return bool;
+    public Optional<User> findByLogin ( String login ) {
+        return users.stream()
+                .filter(user -> user.getLogin().equals(login))
+                .findFirst()
+                .map(User::copy);
     }
 
-    public boolean removeUser(User user) {
-        boolean bool = users.removeIf(u -> u.getLogin().equals(user.getLogin()));
-        save();
-        return bool;
+    @Override
+    public User save ( User user ) {
+        if (user == null){
+            throw new IllegalArgumentException("user cannot be null");
+        }
+        User toSave = user.copy();
+        if (toSave.getId() == null || toSave.getId().isBlank()){
+            toSave.setId(UUID.randomUUID().toString());
+        } else {
+            users.removeIf(u -> u.getId().equals(toSave.getId()));
+        }
+        users.add(toSave);
+        storage.save(users);
+        return toSave.copy();
+    }
+
+    @Override
+    public void deleteById ( String id ) {
+        users.removeIf(user -> user.getId().equals(id));
+        storage.save(users);
     }
 }

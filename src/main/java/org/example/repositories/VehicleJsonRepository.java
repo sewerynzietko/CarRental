@@ -1,11 +1,15 @@
-package org.example.renting;
+package org.example.repositories;
+
+import org.example.old.Car;
+import org.example.old.Motorcycle;
+import org.example.models.Vehicle;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class VehicleRepositoryImpl implements IVehicleRepository {
+public class VehicleJsonRepository implements VehicleRepository {
     List<Vehicle> vehicles;
 
     @Override
@@ -107,7 +111,7 @@ public class VehicleRepositoryImpl implements IVehicleRepository {
         return null;
     }
 
-    public VehicleRepositoryImpl ( ) {
+    public VehicleJsonRepository ( ) {
         vehicles = new ArrayList<>();
         load();
     }

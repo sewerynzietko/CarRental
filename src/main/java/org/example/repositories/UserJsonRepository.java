@@ -1,14 +1,17 @@
-package org.example.authentication;
+package org.example.repositories;
+
+import org.example.models.Role;
+import org.example.models.User;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class UserRepository implements IUserRepository{
+public class UserJsonRepository implements UserRepository {
     private ArrayList<User> users;
 
-    public UserRepository () {
+    public UserJsonRepository () {
         users = new ArrayList<>();
         load();
     }

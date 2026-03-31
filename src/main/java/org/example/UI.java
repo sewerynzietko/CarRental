@@ -1,20 +1,26 @@
 package org.example;
 
-import org.example.authentication.*;
-import org.example.renting.*;
+import org.example.old.Authentication;
+import org.example.old.Car;
+import org.example.old.Motorcycle;
+import org.example.repositories.UserRepository;
+import org.example.repositories.VehicleRepository;
+import org.example.repositories.UserJsonRepository;
+import org.example.repositories.VehicleJsonRepository;
+import org.example.models.*;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class UI {
-    private IVehicleRepository vehicleRepository;
-    private IUserRepository userRepository;
+    private VehicleRepository vehicleRepository;
+    private UserRepository userRepository;
     private Authentication authentication;
     private Scanner sc;
 
     public UI () {
-        this.vehicleRepository = new VehicleRepositoryImpl();
-        this.userRepository = new UserRepository();
+        this.vehicleRepository = new VehicleJsonRepository();
+        this.userRepository = new UserJsonRepository();
         this.authentication = new Authentication(userRepository);
         this.sc = new Scanner(System.in);
     }

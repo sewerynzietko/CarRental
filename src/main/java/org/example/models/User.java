@@ -1,4 +1,4 @@
-package org.example.authentication;
+package org.example.models;
 
 public class User {
     private String login;

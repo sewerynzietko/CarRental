@@ -1,4 +1,4 @@
-package org.example.renting;
+package org.example.models;
 
 public abstract class Vehicle {
     protected String id;

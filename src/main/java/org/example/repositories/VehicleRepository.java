@@ -1,8 +1,10 @@
-package org.example.renting;
+package org.example.repositories;
+
+import org.example.models.Vehicle;
 
 import java.util.List;
 
-public interface IVehicleRepository {
+public interface VehicleRepository {
     boolean rentVehicle(String id);
     boolean returnVehicle(String id);
     List<Vehicle> getVehicles();

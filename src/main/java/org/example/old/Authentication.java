@@ -1,10 +1,13 @@
-package org.example.authentication;
+package org.example.old;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.example.repositories.UserRepository;
+import org.example.models.User;
+
 public class Authentication {
 
-    IUserRepository userRepository;
-    public Authentication ( IUserRepository userRepository ) {
+    UserRepository userRepository;
+    public Authentication ( UserRepository userRepository ) {
         this.userRepository = userRepository;
     }
 

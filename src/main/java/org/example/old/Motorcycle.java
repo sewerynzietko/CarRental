@@ -1,4 +1,6 @@
-package org.example.renting;
+package org.example.old;
+
+import org.example.models.Vehicle;
 
 public class Motorcycle extends Vehicle {
     private String category;

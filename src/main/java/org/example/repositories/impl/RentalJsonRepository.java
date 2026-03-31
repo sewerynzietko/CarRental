@@ -1,4 +1,4 @@
-package org.example.repositories;
+package org.example.repositories.impl;
 
 public class RentalJsonRepository {
 }

@@ -5,8 +5,8 @@ import org.example.old.Car;
 import org.example.old.Motorcycle;
 import org.example.repositories.UserRepository;
 import org.example.repositories.VehicleRepository;
-import org.example.repositories.UserJsonRepository;
-import org.example.repositories.VehicleJsonRepository;
+import org.example.repositories.impl.UserJsonRepository;
+import org.example.repositories.impl.VehicleJsonRepository;
 import org.example.models.*;
 
 import java.util.List;

@@ -3,7 +3,7 @@ package org.example;
 import org.example.old.Authentication;
 import org.example.repositories.UserRepository;
 import org.example.models.User;
-import org.example.repositories.UserJsonRepository;
+import org.example.repositories.impl.UserJsonRepository;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

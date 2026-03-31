@@ -3,7 +3,7 @@ package org.example;
 import org.example.old.Car;
 import org.example.repositories.VehicleRepository;
 import org.example.models.Vehicle;
-import org.example.repositories.VehicleJsonRepository;
+import org.example.repositories.impl.VehicleJsonRepository;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

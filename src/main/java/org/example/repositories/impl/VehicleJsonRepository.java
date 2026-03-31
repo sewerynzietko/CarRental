@@ -1,8 +1,9 @@
-package org.example.repositories;
+package org.example.repositories.impl;
 
 import org.example.old.Car;
 import org.example.old.Motorcycle;
 import org.example.models.Vehicle;
+import org.example.repositories.VehicleRepository;
 
 import java.io.*;
 import java.util.ArrayList;

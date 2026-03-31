@@ -1,7 +1,8 @@
-package org.example.repositories;
+package org.example.repositories.impl;
 
 import org.example.models.Role;
 import org.example.models.User;
+import org.example.repositories.UserRepository;
 
 import java.io.*;
 import java.util.ArrayList;

@@ -58,36 +58,4 @@ public class VehicleJsonRepository implements VehicleRepository {
         vehicles.removeIf(vehicle -> vehicle.getId().equals(id));
         storage.save(vehicles);
     }
-
-
-    //old
-//    @Override
-//    public boolean rentVehicle ( String id ) {
-//        for( Vehicle vehicle : vehicles ){
-//            if(vehicle.getId().equals(id)){
-//                if(vehicle.isRented()){
-//                    return false;
-//                }
-//                vehicle.setRented(true);
-//                save();
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean returnVehicle ( String id ) {
-//        for( Vehicle vehicle : vehicles ){
-//            if(vehicle.getId().equals(id)) {
-//                if(!vehicle.isRented()) {
-//                    return false;
-//                }
-//                vehicle.setRented(false);
-//                save();
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 }

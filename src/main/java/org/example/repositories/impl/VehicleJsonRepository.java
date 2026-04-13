@@ -11,7 +11,7 @@ public class VehicleJsonRepository implements VehicleRepository {
     List<Vehicle> vehicles;
     private final JsonFileStorage<Vehicle> storage =
             new JsonFileStorage<>(
-                    "vehicle.json",
+                    "vehicles.json",
                     new TypeToken<List<Vehicle>>()
                     {}.getType()
                     );

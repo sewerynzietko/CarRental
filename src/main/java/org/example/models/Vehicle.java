@@ -27,6 +27,7 @@ public class Vehicle {
     private Map<String, Object> attributes = new HashMap<>();
 
     public Vehicle(String id,
+                   String category,
                    String brand,
                    String model,
                    int year,
@@ -34,6 +35,7 @@ public class Vehicle {
                    double price,
                    Map<String, Object> attributes) {
         this.id = id;
+        this.category = category;
         this.brand = brand;
         this.model = model;
         this.year = year;
@@ -43,7 +45,7 @@ public class Vehicle {
     }
 
     public Map<String, Object> getAttributes(){
-        return Collection.unmodifiableMap(attributes);
+        return Collections.unmodifiableMap(attributes);
     }
 
     public Object getAttribute(String key){

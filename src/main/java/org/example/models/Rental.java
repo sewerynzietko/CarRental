@@ -2,7 +2,7 @@ package org.example.models;
 
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,8 +13,8 @@ public class Rental {
     private String id;
     private String vehicleId;
     private String userId;
-    private Date rentDateTime;
-    private Date returnDateTime;
+    private LocalDateTime rentDateTime;
+    private LocalDateTime returnDateTime;
 
     public Rental copy(){
         return Rental.builder()
@@ -26,7 +26,7 @@ public class Rental {
                 .build();
     }
 
-    public boolean isActive(){
-        return false;
+    public boolean isActive() {
+        return returnDateTime == null;
     }
 }

@@ -1,15 +1,22 @@
 package org.example.db;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JsonFileStorage<T> {
 
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, (JsonDeserializer<LocalDateTime>) (json, typeOfT, context) ->
+                    LocalDateTime.parse(json.getAsString()))
+            .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (src, typeOfSrc, context) ->
+                    new JsonPrimitive(src.toString()))
+            .create();
     private final Path path;
     private final Type type;
 

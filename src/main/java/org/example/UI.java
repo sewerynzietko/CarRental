@@ -88,7 +88,7 @@ public class UI {
             System.out.println("1. Dostępne pojazdy | 2. Wypożycz | 3. Zwróć | 4. Moje dane | 5. Moja historia | 0. Wyloguj");
 
             switch (scanner.nextLine().trim()) {
-                case "1" -> vehicleService.findAvailableVehicles().forEach(System.out::println);
+                case "1" -> vehicleService.findAvailableVehicles().forEach((v, k) -> System.out.println(v + " " + k));
                 case "2" -> rentVehicle(loggedUser);
                 case "3" -> returnVehicle(loggedUser);
                 case "4" -> showCurrentUserData(loggedUser);

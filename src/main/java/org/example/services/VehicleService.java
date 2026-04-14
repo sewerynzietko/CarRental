@@ -25,6 +25,7 @@ public class VehicleService {
         vehicleRepository.save(vehicle);
         return vehicle;
     }
+
     public List<Vehicle> findAllVehicles() {
         return vehicleRepository.findAll();
     }
@@ -35,19 +36,21 @@ public class VehicleService {
 
         boolean rented = rentalRepository
                 .findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
-        if (rented){
+        if (rented) {
             throw new IllegalArgumentException("Nie można usunć pojzdu, bo jest aktualnie wypożyczony.");
         }
         vehicleRepository.deleteById(vehicle.getId());
     }
 
     public Map<Object, Object> findAvailableVehicles() {
+        return null;
     }
 
     public boolean isVehicleRented(String vehicleId) {
         return rentalRepository.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
     }
 
-    public Optional<Rental> findById(String vehicleId) {
-        return rentalRepository.findById(vehicleId);
+    public Optional<Vehicle> findById(String vehicleId) {
+        return vehicleRepository.findById(vehicleId);
     }
+}

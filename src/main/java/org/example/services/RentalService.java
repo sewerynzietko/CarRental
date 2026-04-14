@@ -83,7 +83,7 @@ public class RentalService {
         return null;
     }
 
-    public Optional<Object> findActiveRentalByUserId(String id) {
+    public Optional<Rental> findActiveRentalByUserId(String id) {
         return null;
     }
 

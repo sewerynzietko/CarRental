@@ -78,4 +78,20 @@ public class RentalService {
                 .sorted(Comparator.comparing(Rental::getRentDateTime).reversed())
                 .collect(Collectors.toList());
     }
+
+    public List<Rental> findUserRentals(String id) {
+        return null;
+    }
+
+    public Optional<Object> findActiveRentalByUserId(String id) {
+        return null;
+    }
+
+    public List<Rental> findAllRentals() {
+        return null;
+    }
+
+    public boolean vehicleHasActiveRental(String vehicleId) {
+        return rentalRepo.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
+    }
 }

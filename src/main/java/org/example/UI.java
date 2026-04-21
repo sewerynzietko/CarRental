@@ -68,8 +68,7 @@ public class UI {
             switch (scanner.nextLine().trim()) {
                 case "1" -> vehicleService.findAllVehicles().forEach(v ->
                         System.out.println(v +
-                                " [Wypożyczony: " + vehicleService.isVehicleRented(v.getId()) + "]"
-                                + "[Wypożyczony: " +rentalService.vehicleHasActiveRental(v.getId()) + "]"));
+                                " [Wypożyczony: " + vehicleService.isVehicleRented(v.getId()) + "]"));
                 case "2" -> addVehicle();
                 case "3" -> deleteVehicle();
                 case "4" -> showAllUsers();
@@ -88,7 +87,7 @@ public class UI {
             System.out.println("1. Dostępne pojazdy | 2. Wypożycz | 3. Zwróć | 4. Moje dane | 5. Moja historia | 0. Wyloguj");
 
             switch (scanner.nextLine().trim()) {
-                case "1" -> vehicleService.findAvailableVehicles().forEach((v, k) -> System.out.println(v + " " + k));
+                case "1" -> vehicleService.findAvailableVehicles().forEach(v -> System.out.println(v.toString()));
                 case "2" -> rentVehicle(loggedUser);
                 case "3" -> returnVehicle(loggedUser);
                 case "4" -> showCurrentUserData(loggedUser);
@@ -175,6 +174,9 @@ public class UI {
 
     private void rentVehicle(User loggedUser) {
         try {
+            if(!rentalService.findActiveRentalByUserId(loggedUser.getId()).isEmpty()) {
+                throw new IllegalArgumentException("Masz aktualnie wypożyczny pojazd!");
+            }
             rentalService.rentVehicle(loggedUser.getId(), readText("ID pojazdu do wypożyczenia: "));
             System.out.println("Pojazd został wypożyczony.");
         } catch (Exception e) {
@@ -184,6 +186,9 @@ public class UI {
 
     private void returnVehicle(User loggedUser) {
         try {
+            if(rentalService.findActiveRentalByUserId(loggedUser.getId()).isEmpty()) {
+                throw new IllegalArgumentException("Nie masz aktalnie wypożyczonego pojazdu!");
+            }
             rentalService.returnVehicle(loggedUser.getId());
             System.out.println("Pojazd został zwrócony.");
         } catch (Exception e) {
@@ -208,7 +213,7 @@ public class UI {
                             () -> System.out.println("Brak aktywnego wypożyczenia.")
                     );
         } catch (Exception e) {
-            System.out.println("Nie udało się odczytać danych użytkownika.");
+            System.out.println("Nie udało się odczytać danych użytkownika." + e);
         }
     }
 
@@ -286,6 +291,8 @@ public class UI {
 
         System.out.println("  user: " + login);
         System.out.println("  vehicle: " + vehicle);
+        System.out.println("  wypożyczono: " + rental.getRentDateTime());
+        System.out.println("  zwrócono: " + rental.getReturnDateTime());
         System.out.println("--------------------");
     }
 }

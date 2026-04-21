@@ -30,7 +30,7 @@ public class VehicleJsonRepository implements VehicleRepository {
     }
 
     @Override
-    public Optional<Vehicle> findById ( String id ) {
+    public Optional<Vehicle> findById (String id ) {
         return vehicles.stream()
                 .filter(vehicle -> vehicle.getId().equals(id))
                 .findFirst()
@@ -50,7 +50,7 @@ public class VehicleJsonRepository implements VehicleRepository {
         }
         vehicles.add(toSave);
         storage.save(vehicles);
-        return toSave.copy();
+        return toSave;
     }
 
     @Override

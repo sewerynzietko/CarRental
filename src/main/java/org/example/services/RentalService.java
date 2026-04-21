@@ -20,12 +20,12 @@ public class RentalService {
         this.vehicleRepo = vehicleRepo;
     }
 
-    public boolean rentVehicle(String userId, String vehicleId) {
+    public void rentVehicle(String userId, String vehicleId) {
         Optional<Vehicle> vehicle = vehicleRepo.findById(vehicleId);
-        if (vehicle.isEmpty()) return false;
+        if (vehicle.isEmpty()) throw new IllegalArgumentException("Pojazd nie istnieje");
 
         boolean isAlreadyRented = rentalRepo.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
-        if (isAlreadyRented) return false;
+        if (isAlreadyRented) throw new IllegalArgumentException("Pojazd jest aktualnie wypożyczony");
 
         Rental rental = Rental.builder()
                 .userId(userId)
@@ -34,7 +34,6 @@ public class RentalService {
                 .build();
 
         rentalRepo.save(rental);
-        return true;
     }
 
     public boolean returnVehicle(String userId) {
@@ -51,47 +50,18 @@ public class RentalService {
         return false;
     }
 
-    public Optional<Rental> getActiveRentalForUser(String userId) {
+
+    public List<Rental> findUserRentals(String userId) {
+        return rentalRepo.findById(userId);
+    }
+
+    public Optional<Rental> findActiveRentalByUserId(String userId) {
         return rentalRepo.findAll().stream()
                 .filter(r -> r.getUserId().equals(userId) && r.isActive())
                 .findFirst();
     }
 
-    public List<Vehicle> getAvailableVehicles() {
-        List<String> rentedVehicleIds = rentalRepo.findAll().stream()
-                .filter(Rental::isActive)
-                .map(Rental::getVehicleId)
-                .toList();
-
-        return vehicleRepo.findAll().stream()
-                .filter(v -> !rentedVehicleIds.contains(v.getId()))
-                .collect(Collectors.toList());
-    }
-
-    public String getRentalStatusForVehicle(String vehicleId) {
-        return rentalRepo.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent() ? "Wypożyczony" : "Dostępny";
-    }
-
-    public List<Rental> getAllRentalsForVehicle(String vehicleId) {
-        return rentalRepo.findAll().stream()
-                .filter(r -> r.getVehicleId().equals(vehicleId))
-                .sorted(Comparator.comparing(Rental::getRentDateTime).reversed())
-                .collect(Collectors.toList());
-    }
-
-    public List<Rental> findUserRentals(String id) {
-        return null;
-    }
-
-    public Optional<Rental> findActiveRentalByUserId(String id) {
-        return null;
-    }
-
     public List<Rental> findAllRentals() {
-        return null;
-    }
-
-    public boolean vehicleHasActiveRental(String vehicleId) {
-        return rentalRepo.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
+        return rentalRepo.findAll();
     }
 }

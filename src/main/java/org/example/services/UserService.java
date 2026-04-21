@@ -19,10 +19,15 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika."));
 
-        boolean rental = userRepository.equals("a");
-        if (rental) {
-            throw new IllegalArgumentException("Nie można usunć pojzdu, bo jest aktualnie wypożyczony.");
+        if (userId.equals(loggedUserId)){
+            throw new IllegalArgumentException("Nie można usunąć aktualnie zalogowanego użytkownika.");
         }
+
+        boolean rental = rentalService.findActiveRentalByUserId(userId).isEmpty();
+        if (!rental) {
+            throw new IllegalArgumentException("Nie można usunć użytkownika, bo ma aktualnie wypożyczony pojazd.");
+        }
+
         userRepository.deleteById(user.getId());
     }
 
@@ -31,6 +36,6 @@ public class UserService {
     }
 
     public User findById(String id) {
-        return null;
+        return userRepository.findById(id).orElseThrow();
     }
 }

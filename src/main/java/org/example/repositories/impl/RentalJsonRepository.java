@@ -32,11 +32,8 @@ public class RentalJsonRepository implements RentalRepository {
     }
 
     @Override
-    public Optional<Rental> findById(String id) {
-        return rentals.stream()
-                .filter(rental -> rental.getId().equals(id))
-                .findFirst()
-                .map(Rental::copy);
+    public List<Rental> findById(String userId) {
+        return rentals.stream().filter(rental -> rental.getUserId().equals(userId)).toList();
     }
 
     @Override

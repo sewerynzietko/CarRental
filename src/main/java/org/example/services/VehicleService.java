@@ -18,12 +18,12 @@ public class VehicleService {
     public VehicleService(VehicleRepository vehicleRepository, RentalRepository rentalRepository, VehicleValidator vehicleValidator) {
         this.rentalRepository = rentalRepository;
         this.vehicleRepository = vehicleRepository;
+        this.vehicleValidator = vehicleValidator;
     }
 
     public Vehicle addVehicle(Vehicle vehicle) {
         vehicleValidator.validate(vehicle);
-        vehicleRepository.save(vehicle);
-        return vehicle;
+        return vehicleRepository.save(vehicle);
     }
 
     public List<Vehicle> findAllVehicles() {
@@ -42,15 +42,15 @@ public class VehicleService {
         vehicleRepository.deleteById(vehicle.getId());
     }
 
-    public Map<Object, Object> findAvailableVehicles() {
-        return null;
+    public List<Vehicle> findAvailableVehicles() {
+        return vehicleRepository.findAll().stream().filter(v -> !rentalRepository.findByVehicleIdAndReturnDateIsNull(v.getId()).isPresent()).toList();
     }
 
     public boolean isVehicleRented(String vehicleId) {
         return rentalRepository.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
     }
 
-    public Optional<Vehicle> findById(String vehicleId) {
-        return vehicleRepository.findById(vehicleId);
+    public Vehicle findById(String vehicleId) {
+        return vehicleRepository.findById(vehicleId).orElseThrow();
     }
 }

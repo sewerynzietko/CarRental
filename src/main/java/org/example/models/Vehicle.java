@@ -1,9 +1,6 @@
 package org.example.models;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.*;
 
@@ -11,6 +8,7 @@ import java.util.*;
 @Getter
 @Setter
 @Builder
+@ToString
 
 public class Vehicle {
     private String id;
@@ -24,7 +22,7 @@ public class Vehicle {
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
 
-    private Map<String, Object> attributes = new HashMap<>();
+    private Map<String, Object> attributes;
 
     public Vehicle(String id,
                    String category,

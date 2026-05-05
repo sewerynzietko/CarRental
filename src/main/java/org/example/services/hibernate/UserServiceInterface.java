@@ -1,6 +1,7 @@
-package com.umcsuser.carrent.services;
+package org.example.services.hibernate;
 
-import com.umcsuser.carrent.models.User;
+
+import org.example.models.User;
 
 import java.util.List;
 

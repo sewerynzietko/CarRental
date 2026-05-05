@@ -1,14 +1,14 @@
-package com.umcsuser.carrent.services;
+package org.example.services.hibernate;
 
 
-import com.umcsuser.carrent.models.Rental;
+import org.example.models.Rental;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface RentalServiceInterface {
 
-    Rental rentVehicle(String userId, String vehicleId);
+    Rental rentVehicle( String userId, String vehicleId);
 
     Rental returnVehicle(String userId);
 

@@ -1,8 +1,5 @@
-package com.umcsuser.carrent.services;
-
-
-import com.umcsuser.carrent.models.Vehicle;
-
+package org.example.services.hibernate;
+import org.example.models.Vehicle;
 import java.util.List;
 
 public interface VehicleServiceInterface {

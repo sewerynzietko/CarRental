@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class VehicleCategoryConfigJdbcRepository implements VehicleCategoryConfigRepository {
+public class VehicleCategoryConfigHibernateRepository implements VehicleCategoryConfigRepository {
 
     private final JsonFileStorage<VehicleCategoryConfig> storage =
             new JsonFileStorage<>("categoriesjdbc.json",
@@ -17,11 +17,11 @@ public class VehicleCategoryConfigJdbcRepository implements VehicleCategoryConfi
 
     private final List<VehicleCategoryConfig> configs;
 
-    public VehicleCategoryConfigJdbcRepository() {
+    public VehicleCategoryConfigHibernateRepository() {
         this.configs = new ArrayList<>(storage.load());
     }
 
-    public VehicleCategoryConfigJdbcRepository ( List<VehicleCategoryConfig> configs ) {
+    public VehicleCategoryConfigHibernateRepository ( List<VehicleCategoryConfig> configs ) {
         this.configs = configs;
     }
 

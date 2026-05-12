@@ -4,14 +4,23 @@ import org.example.db.JdbcConnectionManager;
 import org.example.models.Role;
 import org.example.models.User;
 import org.example.repositories.UserRepository;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-
+@Repository
+@Profile("jdbc")
 public class UserJdbcRepository implements UserRepository {
+
+    private final DataSource dataSource;
+    public UserJdbcRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
     @Override
     public List<User> findAll () {
         List<User> users = new ArrayList<>();

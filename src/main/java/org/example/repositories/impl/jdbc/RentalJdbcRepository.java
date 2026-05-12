@@ -3,7 +3,10 @@ package org.example.repositories.impl.jdbc;
 import org.example.db.JdbcConnectionManager;
 import org.example.models.Rental;
 import org.example.repositories.RentalRepository;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,7 +17,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
+@Profile("jdbc")
 public class RentalJdbcRepository implements RentalRepository {
+
+    private final DataSource dataSource;
+    public RentalJdbcRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     @Override
     public List<Rental> findAll () {
         List<Rental> rentals = new ArrayList<>();

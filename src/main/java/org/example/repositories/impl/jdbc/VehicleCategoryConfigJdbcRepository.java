@@ -4,11 +4,16 @@ import com.google.gson.reflect.TypeToken;
 import org.example.db.JsonFileStorage;
 import org.example.models.VehicleCategoryConfig;
 import org.example.repositories.VehicleCategoryConfigRepository;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
+@Profile("jdbc")
 public class VehicleCategoryConfigJdbcRepository implements VehicleCategoryConfigRepository {
 
     private final JsonFileStorage<VehicleCategoryConfig> storage =

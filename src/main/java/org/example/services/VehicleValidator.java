@@ -6,6 +6,8 @@ import org.example.services.impl.VehicleCategoryConfigService;
 
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+@Component
 public class VehicleValidator {
 
     private final VehicleCategoryConfigService configService;

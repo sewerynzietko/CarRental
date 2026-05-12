@@ -4,11 +4,14 @@ import org.example.models.Rental;
 import org.example.models.Vehicle;
 import org.example.repositories.RentalRepository;
 import org.example.repositories.VehicleRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
+@Service
+@Transactional
 public class RentalService {
     private final RentalRepository rentalRepo;
     private final VehicleRepository vehicleRepo;
@@ -49,6 +52,7 @@ public class RentalService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<Rental> findUserRentals(String userId) {
         return rentalRepo.findById(userId);
     }

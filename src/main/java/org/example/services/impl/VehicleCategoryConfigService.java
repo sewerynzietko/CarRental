@@ -2,9 +2,12 @@ package org.example.services.impl;
 
 import org.example.models.VehicleCategoryConfig;
 import org.example.repositories.VehicleCategoryConfigRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+@Service
+@Transactional
 public class VehicleCategoryConfigService {
 
     private final VehicleCategoryConfigRepository configRepository;
@@ -13,6 +16,7 @@ public class VehicleCategoryConfigService {
         this.configRepository = configRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<VehicleCategoryConfig> findAllCategories() {
         return configRepository.findAll();
     }

@@ -5,11 +5,14 @@ import org.example.models.Vehicle;
 import org.example.repositories.RentalRepository;
 import org.example.repositories.VehicleRepository;
 import org.example.services.VehicleValidator;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+@Service
+@Transactional
 public class VehicleService {
 
     private RentalRepository rentalRepository;
@@ -26,7 +29,7 @@ public class VehicleService {
         vehicleValidator.validate(vehicle);
         return vehicleRepository.save(vehicle);
     }
-
+    @Transactional(readOnly = true)
     public List<Vehicle> findAllVehicles() {
         return vehicleRepository.findAll();
     }

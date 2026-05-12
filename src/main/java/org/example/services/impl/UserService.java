@@ -2,9 +2,12 @@ package org.example.services.impl;
 
 import org.example.models.User;
 import org.example.repositories.UserRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+@Service
+@Transactional
 public class UserService {
     UserRepository userRepository;
     RentalService rentalService;
@@ -29,6 +32,7 @@ public class UserService {
         userRepository.deleteById(user.getId());
     }
 
+    @Transactional(readOnly = true)
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }

@@ -77,13 +77,14 @@ public class UserJdbcRepository implements UserRepository {
     }
 
     @Override
-    public User save ( User user ) {
+    public User save(User user) {
         if (user.getId() == null || user.getId().isBlank()) {
             user.setId(UUID.randomUUID().toString());
-        } else {
-            deleteById(user.getId());
         }
-        String sql = "INSERT INTO users (id, login, password_hash, role) VALUES (?, ?, ?, ?::jsonb)";
+        String sql = "INSERT INTO users (id, login, password_hash, role) VALUES (?, ?, ?, ?) " +
+                "ON CONFLICT (id) DO UPDATE SET " +
+                "login = EXCLUDED.login, password_hash = EXCLUDED.password_hash, role = EXCLUDED.role";
+
         try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, user.getId());

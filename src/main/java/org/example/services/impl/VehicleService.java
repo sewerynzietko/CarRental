@@ -1,9 +1,10 @@
-package org.example.services;
+package org.example.services.impl;
 
 import org.example.models.Rental;
 import org.example.models.Vehicle;
 import org.example.repositories.RentalRepository;
 import org.example.repositories.VehicleRepository;
+import org.example.services.VehicleValidator;
 
 import java.util.List;
 import java.util.Map;

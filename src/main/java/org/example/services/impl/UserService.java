@@ -1,8 +1,6 @@
-package org.example.services;
+package org.example.services.impl;
 
-import org.example.models.Rental;
 import org.example.models.User;
-import org.example.models.Vehicle;
 import org.example.repositories.UserRepository;
 
 import java.util.List;

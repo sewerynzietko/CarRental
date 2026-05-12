@@ -10,8 +10,12 @@ import org.example.repositories.impl.json.UserJsonRepository;
 import org.example.repositories.impl.json.VehicleCategoryConfigJsonRepository;
 import org.example.repositories.impl.json.VehicleJsonRepository;
 import org.example.services.*;
+import org.example.services.impl.RentalService;
+import org.example.services.impl.UserService;
+import org.example.services.impl.VehicleCategoryConfigService;
+import org.example.services.impl.VehicleService;
 
-public class Main {
+public class CarRentApplication {
     public static void main(String[] args) {
 
         VehicleRepository vehicleRepository;

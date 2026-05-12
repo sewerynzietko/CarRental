@@ -2,6 +2,7 @@ package org.example.services;
 
 import org.example.models.Vehicle;
 import org.example.models.VehicleCategoryConfig;
+import org.example.services.impl.VehicleCategoryConfigService;
 
 import java.util.Map;
 

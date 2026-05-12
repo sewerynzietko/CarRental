@@ -1,4 +1,4 @@
-package org.example.services.hibernate;
+package org.example.services;
 import org.example.models.Vehicle;
 import java.util.List;
 

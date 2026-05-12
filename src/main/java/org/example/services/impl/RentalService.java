@@ -1,4 +1,4 @@
-package org.example.services;
+package org.example.services.impl;
 
 import org.example.models.Rental;
 import org.example.models.Vehicle;
@@ -6,10 +6,8 @@ import org.example.repositories.RentalRepository;
 import org.example.repositories.VehicleRepository;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class RentalService {
     private final RentalRepository rentalRepo;

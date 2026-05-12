@@ -5,24 +5,26 @@ import org.example.db.JsonFileStorage;
 import org.example.models.Role;
 import org.example.models.User;
 import org.example.models.Vehicle;
+import org.example.models.VehicleCategoryConfig;
 import org.example.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.util.*;
 
+@Repository
+@Profile("json")
 public class UserJsonRepository implements UserRepository {
 
-    private final JsonFileStorage<User> storage =
-            new JsonFileStorage<>(
-                    "users.json",
-                    new TypeToken<List<User>>()
-                    {}.getType()
-            );
+    public JsonFileStorage<User> storage;
 
     private ArrayList<User> users;
 
-    public UserJsonRepository () {
-        users = new ArrayList<>(storage.load());
+    public UserJsonRepository (@Value("${carrent.json.users-file}") String filename) {
+        this.storage = new JsonFileStorage<>(filename, new TypeToken<List<User>>() {}.getType());
+        this.users = new ArrayList<>(storage.load());
     }
 
     public List<User> findAll () {

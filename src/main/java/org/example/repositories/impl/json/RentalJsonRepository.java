@@ -3,27 +3,29 @@ package org.example.repositories.impl.json;
 import com.google.gson.reflect.TypeToken;
 import org.example.db.JsonFileStorage;
 import org.example.models.Rental;
+import org.example.models.User;
 import org.example.repositories.RentalRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+@Repository
+@Profile("json")
 public class RentalJsonRepository implements RentalRepository {
 
-    private final JsonFileStorage<Rental> storage =
-            new JsonFileStorage<>(
-                    "rentals.json",
-                    new TypeToken<List<Rental>>()
-                    {}.getType()
-            );
+    public JsonFileStorage<Rental> storage;
 
     private ArrayList<Rental> rentals;
 
-    public RentalJsonRepository() {
-        rentals = new ArrayList<>(storage.load());
+    public RentalJsonRepository(@Value("${carrent.json.rentals-file}") String filename) {
+        this.storage = new JsonFileStorage<>(filename, new TypeToken<List<Rental>>() {
+        }.getType());
+        this.rentals = new ArrayList<>(storage.load());
     }
 
     @Override

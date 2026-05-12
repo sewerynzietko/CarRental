@@ -2,23 +2,27 @@ package org.example.repositories.impl.json;
 
 import com.google.gson.reflect.TypeToken;
 import org.example.db.JsonFileStorage;
+import org.example.models.Vehicle;
 import org.example.models.VehicleCategoryConfig;
 import org.example.repositories.VehicleCategoryConfigRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+@Repository
+@Profile("json")
 public class VehicleCategoryConfigJsonRepository implements VehicleCategoryConfigRepository {
 
-    private final JsonFileStorage<VehicleCategoryConfig> storage =
-            new JsonFileStorage<>("categories.json",
-                    new TypeToken<List<VehicleCategoryConfig>>() {}.getType());
+    public JsonFileStorage<VehicleCategoryConfig> storage;
+    private List<VehicleCategoryConfig> configs;
 
-    private final List<VehicleCategoryConfig> configs;
-
-    public VehicleCategoryConfigJsonRepository() {
-        this.configs = new ArrayList<>(storage.load());
+    public VehicleCategoryConfigJsonRepository(
+        @Value("${carrent.json.categories-file}") String filename) {
+            this.storage = new JsonFileStorage<>(filename, new TypeToken<List<VehicleCategoryConfig>>() {}.getType());
+            this.configs = new ArrayList<>(storage.load());
     }
 
     @Override

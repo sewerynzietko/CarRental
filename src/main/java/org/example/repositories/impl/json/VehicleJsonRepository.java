@@ -4,20 +4,20 @@ import com.google.gson.reflect.TypeToken;
 import org.example.db.JsonFileStorage;
 import org.example.models.Vehicle;
 import org.example.repositories.VehicleRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
-
+@Repository
+@Profile("json")
 public class VehicleJsonRepository implements VehicleRepository {
     List<Vehicle> vehicles;
-    private final JsonFileStorage<Vehicle> storage =
-            new JsonFileStorage<>(
-                    "vehicles.json",
-                    new TypeToken<List<Vehicle>>()
-                    {}.getType()
-                    );
-
-    public VehicleJsonRepository ( ) {
-        vehicles = new ArrayList<>(storage.load());
+    private JsonFileStorage<Vehicle> storage;
+    public VehicleJsonRepository(
+            @Value("${carrent.json.vehicles-file}") String filename) {
+            this.storage = new JsonFileStorage<>(filename, new TypeToken<List<Vehicle>>(){}.getType());
+            this.vehicles = new ArrayList<>(storage.load());
     }
 
     @Override

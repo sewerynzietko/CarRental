@@ -36,7 +36,7 @@ public class RentalJdbcRepository implements RentalRepository {
     @Override
     public List<Rental> findById ( String id ) {
         List<Rental> rentals = new ArrayList<>();
-        String sql = "SELECT * FROM rental WHERE id = ?";
+        String sql = "SELECT * FROM rental WHERE user_id = ?";
         try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, id);
@@ -55,17 +55,21 @@ public class RentalJdbcRepository implements RentalRepository {
     public Rental save ( Rental rental ) {
         if (rental.getId() == null || rental.getId().isBlank()) {
             rental.setId(UUID.randomUUID().toString());
-        } else {
-            deleteById(rental.getId());
         }
-        String sql = "INSERT INTO rental (id, vehicle_id, user_id, rent_date, return_date) VALUES (?, ?, ?, ?, ?::jsonb)";
+
+        String sql = "INSERT INTO rental (id, vehicle_id, user_id, rent_date, return_date) " +
+                "VALUES (?, ?, ?, ?, ?) " +
+                "ON CONFLICT (id) DO UPDATE SET " +
+                "vehicle_id = EXCLUDED.vehicle_id, user_id = EXCLUDED.user_id, " +
+                "rent_date = EXCLUDED.rent_date, return_date = EXCLUDED.return_date";
+
         try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, rental.getId());
             stmt.setString(2, rental.getVehicleId());
             stmt.setString(3, rental.getUserId());
-            stmt.setString(4, String.valueOf(rental.getRentDateTime()));
-            stmt.setString(5, String.valueOf(rental.getRentDateTime()));
+            stmt.setString(4, rental.getRentDateTime() != null ? rental.getRentDateTime().toString() : null);
+            stmt.setString(5, rental.getReturnDateTime() != null ? rental.getReturnDateTime().toString() : null);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error occurred while saving rentals", e);

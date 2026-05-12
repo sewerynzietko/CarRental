@@ -97,12 +97,13 @@ public class RentalJdbcRepository implements RentalRepository {
             stmt.setString(1, vehicleId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
+                    String rentDateStr = rs.getString("rent_date");
                     Rental rental = Rental.builder()
                             .id(rs.getString("id"))
                             .vehicleId(rs.getString("vehicle_id"))
                             .userId(rs.getString("user_id"))
-                            .rentDateTime(LocalDateTime.parse(rs.getString("rent_date")))
-                            .returnDateTime(LocalDateTime.parse(rs.getString("return_date")))
+                            .rentDateTime(rentDateStr != null ? LocalDateTime.parse(rentDateStr) : null)
+                            .returnDateTime(null)
                             .build();
                     return Optional.of(rental);
                 }
@@ -114,12 +115,14 @@ public class RentalJdbcRepository implements RentalRepository {
     }
 
     private Rental mapRow(ResultSet rs) throws SQLException {
+        String rentDateStr = rs.getString("rent_date");
+        String returnDateStr = rs.getString("return_date");
         return Rental.builder()
                 .id(rs.getString("id"))
                 .vehicleId(rs.getString("vehicle_id"))
                 .userId(rs.getString("user_id"))
-                .rentDateTime(LocalDateTime.parse(rs.getString("rent_date")))
-                .returnDateTime(LocalDateTime.parse(rs.getString("return_date")))
+                .rentDateTime(rentDateStr != null ? LocalDateTime.parse(rentDateStr) : null)
+                .returnDateTime(returnDateStr != null ? LocalDateTime.parse(returnDateStr) : null)
                 .build();
     }
 }

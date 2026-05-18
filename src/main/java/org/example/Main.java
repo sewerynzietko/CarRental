@@ -18,12 +18,11 @@ public class Main {
         UserRepository userRepository;
         RentalRepository rentalRepository;
         VehicleCategoryConfigRepository categoryConfigRepository;
-        if (args[0].equals("--storage=jdbc")) {
+        if (args.length > 0 && args[0].equals("--storage=jdbc")) {
             vehicleRepository = new VehicleJdbcRepository();
             userRepository = new UserJdbcRepository();
             rentalRepository = new RentalJdbcRepository();
             categoryConfigRepository = new VehicleCategoryConfigJdbcRepository();
-            //System.out.println(vehicleRepository.findAll());
         } else {
             vehicleRepository = new VehicleJsonRepository();
             userRepository = new UserJsonRepository();

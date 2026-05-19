@@ -50,7 +50,7 @@ public class RentalService implements RentalServiceInterface{
             rentalRepo.save(rental);
             return rental;
         }
-        return null;
+        throw new IllegalArgumentException("Brak aktywnego wypożyczenia.");
     }
 
 

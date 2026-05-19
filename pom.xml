@@ -76,7 +76,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>org/example/CarRentApplication.java</mainClass>
+                    <mainClass>org.example.CarRentApplication</mainClass>
                     <layout>JAR</layout>
                 </configuration>
             </plugin>

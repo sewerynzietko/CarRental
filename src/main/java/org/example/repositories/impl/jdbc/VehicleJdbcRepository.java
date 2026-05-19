@@ -22,11 +22,6 @@ import java.util.*;
 public class VehicleJdbcRepository implements VehicleRepository {
     private final Gson gson = new Gson();
     private final Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
-
-    private final DataSource dataSource;
-    public VehicleJdbcRepository(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
     @Override
     public List<Vehicle> findAll () {
         List<Vehicle> vehicles = new ArrayList<>();
@@ -80,10 +75,14 @@ public class VehicleJdbcRepository implements VehicleRepository {
     public Vehicle save(Vehicle vehicle) {
         if (vehicle.getId() == null || vehicle.getId().isBlank()) {
             vehicle.setId(UUID.randomUUID().toString());
-        } else {
-            deleteById(vehicle.getId());
         }
-        String sql = "INSERT INTO vehicle (id, category, brand, model, year, plate, price, attributes) VALUES (?, ?, ?, ?, ?, ?, ?, ?::jsonb)";
+
+        String sql = "INSERT INTO vehicle (id, category, brand, model, year, plate, price, attributes) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?::jsonb) " +
+                "ON CONFLICT (id) DO UPDATE SET " +
+                "category = EXCLUDED.category, brand = EXCLUDED.brand, model = EXCLUDED.model, " +
+                "year = EXCLUDED.year, plate = EXCLUDED.plate, price = EXCLUDED.price, attributes = EXCLUDED.attributes";
+
         try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, vehicle.getId());

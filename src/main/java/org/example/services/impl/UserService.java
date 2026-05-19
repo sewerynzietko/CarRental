@@ -2,13 +2,14 @@ package org.example.services.impl;
 
 import org.example.models.User;
 import org.example.repositories.UserRepository;
+import org.example.services.UserServiceInterface;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Service
 @Transactional
-public class UserService {
+public class UserService implements UserServiceInterface {
     UserRepository userRepository;
     RentalService rentalService;
     public UserService(UserRepository userRepository, RentalService rentalService) {

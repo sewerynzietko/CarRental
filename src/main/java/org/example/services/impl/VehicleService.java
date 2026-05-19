@@ -4,6 +4,7 @@ import org.example.models.Rental;
 import org.example.models.Vehicle;
 import org.example.repositories.RentalRepository;
 import org.example.repositories.VehicleRepository;
+import org.example.services.VehicleServiceInterface;
 import org.example.services.VehicleValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 @Service
 @Transactional
-public class VehicleService {
+public class VehicleService implements VehicleServiceInterface {
 
     private RentalRepository rentalRepository;
     private VehicleRepository vehicleRepository;

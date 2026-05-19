@@ -4,6 +4,7 @@ import org.example.models.Rental;
 import org.example.models.Vehicle;
 import org.example.repositories.RentalRepository;
 import org.example.repositories.VehicleRepository;
+import org.example.services.RentalServiceInterface;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 @Service
 @Transactional
-public class RentalService {
+public class RentalService implements RentalServiceInterface{
     private final RentalRepository rentalRepo;
     private final VehicleRepository vehicleRepo;
 
@@ -21,7 +22,7 @@ public class RentalService {
         this.vehicleRepo = vehicleRepo;
     }
 
-    public void rentVehicle(String userId, String vehicleId) {
+    public Rental rentVehicle( String userId, String vehicleId) {
         Optional<Vehicle> vehicle = vehicleRepo.findById(vehicleId);
         if (vehicle.isEmpty()) throw new IllegalArgumentException("Pojazd nie istnieje");
 
@@ -35,9 +36,10 @@ public class RentalService {
                 .build();
 
         rentalRepo.save(rental);
+        return rental;
     }
 
-    public boolean returnVehicle(String userId) {
+    public Rental returnVehicle( String userId) {
         Optional<Rental> activeRental = rentalRepo.findAll().stream()
                 .filter(r -> r.getUserId().equals(userId) && r.isActive())
                 .findFirst();
@@ -46,15 +48,25 @@ public class RentalService {
             Rental rental = activeRental.get();
             rental.setReturnDateTime(LocalDateTime.now());
             rentalRepo.save(rental);
-            return true;
+            return rental;
         }
-        return false;
+        return null;
     }
 
 
     @Transactional(readOnly = true)
     public List<Rental> findUserRentals(String userId) {
         return rentalRepo.findById(userId);
+    }
+
+    @Override
+    public boolean userHasActiveRental ( String userId ) {
+        return false;
+    }
+
+    @Override
+    public boolean vehicleHasActiveRental ( String vehicleId ) {
+        return false;
     }
 
     public Optional<Rental> findActiveRentalByUserId(String userId) {

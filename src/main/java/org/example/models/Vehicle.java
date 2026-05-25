@@ -1,6 +1,11 @@
 package org.example.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.*;
 
@@ -9,19 +14,23 @@ import java.util.*;
 @Setter
 @Builder
 @ToString
-
+@Entity
+@Table(name = "vehicle")
+@NoArgsConstructor
 public class Vehicle {
+    @Id
     private String id;
     private String category;
     private String brand;
     private String model;
     private int year;
     private String plate;
+    @JdbcTypeCode(SqlTypes.NUMERIC)
     private double price;
 
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-
+    @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> attributes;
 
     public Vehicle(String id,

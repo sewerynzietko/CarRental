@@ -6,6 +6,7 @@ import org.example.models.User;
 import org.example.repositories.impl.hibernate.UserHibernateRepository;
 import org.example.services.hibernate.AuthServiceInterface;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Optional;
@@ -19,8 +20,11 @@ public class AuthHibernateService implements AuthServiceInterface {
 
     @Override
     public boolean register ( String login, String rawPassword ) {
+        Transaction tx = null;
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
             setSession(session);
+
             if (userRepo.findByLogin(login).isPresent()) {
                 return false;
             }
@@ -32,8 +36,17 @@ public class AuthHibernateService implements AuthServiceInterface {
                     .role(Role.USER)
                     .build();
 
+            newUser.setId(java.util.UUID.randomUUID().toString());
+
             userRepo.save(newUser);
+
+            tx.commit();
             return true;
+        } catch (RuntimeException e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
         }
     }
 

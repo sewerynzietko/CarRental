@@ -35,11 +35,10 @@ public class RentalHibernateService implements RentalServiceInterface {
 
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
-
             setSession(session);
 
             boolean userHasActiveRental = rentalRepo.findAll().stream()
-                    .anyMatch(r -> userId.equals(r.getUserId()) && r.isActive());
+                    .anyMatch(r -> r.getUser() != null && userId.equals(r.getUser().getId()) && r.isActive());
 
             if (userHasActiveRental) {
                 throw new IllegalArgumentException("Masz juz aktywne wypozyczenie");
@@ -61,16 +60,14 @@ public class RentalHibernateService implements RentalServiceInterface {
 
             Rental rental = Rental.builder()
                     .id(UUID.randomUUID().toString())
-                    .vehicleId(vehicle.getId())
-                    .userId(user.getId())
+                    .vehicle(vehicle)
+                    .user(user)
                     .rentDateTime(LocalDateTime.now())
                     .returnDateTime(null)
                     .build();
 
             Rental savedRental = rentalRepo.save(rental);
-
             tx.commit();
-
             return savedRental;
         } catch (RuntimeException e){
             rollback(tx);
@@ -84,21 +81,17 @@ public class RentalHibernateService implements RentalServiceInterface {
 
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
-
             setSession(session);
 
             Rental rental = rentalRepo.findAll().stream()
-                    .filter(r -> userId.equals(r.getUserId()))
+                    .filter(r -> r.getUser() != null && userId.equals(r.getUser().getId()))
                     .filter(Rental::isActive)
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Nie masz aktualnie wypozyczonego pojazdu."));
 
             rental.setReturnDateTime(LocalDateTime.now());
-
             Rental savedRental = rentalRepo.save(rental);
-
             tx.commit();
-
             return savedRental;
         } catch (RuntimeException e){
             rollback(tx);
@@ -110,9 +103,8 @@ public class RentalHibernateService implements RentalServiceInterface {
     public Optional<Rental> findActiveRentalByUserId ( String userId ) {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             setSession(session);
-
             return rentalRepo.findAll().stream()
-                    .filter(r -> userId.equals(r.getUserId()))
+                    .filter(r -> r.getUser() != null && userId.equals(r.getUser().getId()))
                     .filter(Rental::isActive)
                     .findFirst();
         }
@@ -122,7 +114,6 @@ public class RentalHibernateService implements RentalServiceInterface {
     public List<Rental> findAllRentals () {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             setSession(session);
-
             return rentalRepo.findAll();
         }
     }
@@ -131,9 +122,8 @@ public class RentalHibernateService implements RentalServiceInterface {
     public List<Rental> findUserRentals ( String userId ) {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             setSession(session);
-
             return rentalRepo.findAll().stream()
-                    .filter(r -> userId.equals(r.getUserId()))
+                    .filter(r -> r.getUser() != null && userId.equals(r.getUser().getId()))
                     .toList();
         }
     }
@@ -147,7 +137,6 @@ public class RentalHibernateService implements RentalServiceInterface {
     public boolean vehicleHasActiveRental ( String vehicleId ) {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             setSession(session);
-
             return rentalRepo.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
         }
     }

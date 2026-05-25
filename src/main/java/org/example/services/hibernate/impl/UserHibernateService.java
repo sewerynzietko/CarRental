@@ -39,22 +39,32 @@ public class UserHibernateService implements UserServiceInterface {
     }
 
     @Override
-    public void deleteUser ( String userId, String loggedUserId ) {
+    public void deleteUser(String userId, String loggedUserId) {
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            setSession(session);
-            User user = userRepo.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika."));
+            Transaction tx = session.beginTransaction();
+            try {
+                setSession(session);
+                User user = userRepo.findById(userId)
+                        .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika."));
 
-            if (userId.equals(loggedUserId)) {
-                throw new IllegalArgumentException("Nie można usunąć aktualnie zalogowanego użytkownika.");
+                if (userId.equals(loggedUserId)) {
+                    throw new IllegalArgumentException("Nie można usunąć aktualnie zalogowanego użytkownika.");
+                }
+
+                boolean rental = rentalService.findActiveRentalByUserId(userId).isEmpty();
+
+                setSession(session);
+
+                if (!rental) {
+                    throw new IllegalArgumentException("Nie można usunąć użytkownika, bo ma aktualnie wypożyczony pojazd.");
+                }
+
+                userRepo.deleteById(user.getId());
+                tx.commit();
+            } catch (RuntimeException e) {
+                if (tx.isActive()) tx.rollback();
+                throw e;
             }
-
-            boolean rental = rentalService.findActiveRentalByUserId(userId).isEmpty();
-            if (!rental) {
-                throw new IllegalArgumentException("Nie można usunć użytkownika, bo ma aktualnie wypożyczony pojazd.");
-            }
-
-            userRepo.deleteById(user.getId());
         }
     }
 

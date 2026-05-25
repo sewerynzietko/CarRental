@@ -74,4 +74,5 @@ public class RentalJsonRepository implements RentalRepository {
                 .findFirst()
                 .map(Rental::copy);
     }
+
 }

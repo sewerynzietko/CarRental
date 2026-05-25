@@ -127,4 +127,5 @@ public class RentalJdbcRepository implements RentalRepository {
                 .returnDateTime(returnDateStr != null ? LocalDateTime.parse(returnDateStr) : null)
                 .build();
     }
+
 }

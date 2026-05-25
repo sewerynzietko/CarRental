@@ -4,13 +4,16 @@ import org.example.models.Rental;
 import org.example.models.User;
 import org.example.models.Vehicle;
 import org.example.repositories.UserRepository;
+import org.example.services.hibernate.RentalServiceInterface;
+import org.example.services.hibernate.UserServiceInterface;
 
 import java.util.List;
 
-public class UserService {
-    UserRepository userRepository;
-    RentalService rentalService;
-    public UserService(UserRepository userRepository, RentalService rentalService) {
+public class UserService implements UserServiceInterface {
+    private final UserRepository userRepository;
+    private final RentalServiceInterface rentalService;
+
+    public UserService(UserRepository userRepository, RentalServiceInterface rentalService) {
         this.userRepository = userRepository;
         this.rentalService = rentalService;
     }

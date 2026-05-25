@@ -4,12 +4,13 @@ import org.example.models.Rental;
 import org.example.models.Vehicle;
 import org.example.repositories.RentalRepository;
 import org.example.repositories.VehicleRepository;
+import org.example.services.hibernate.VehicleServiceInterface;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class VehicleService {
+public class VehicleService implements VehicleServiceInterface {
 
     private RentalRepository rentalRepository;
     private VehicleRepository vehicleRepository;

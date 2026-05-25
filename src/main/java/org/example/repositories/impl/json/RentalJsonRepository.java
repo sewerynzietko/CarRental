@@ -33,7 +33,9 @@ public class RentalJsonRepository implements RentalRepository {
 
     @Override
     public List<Rental> findById(String userId) {
-        return rentals.stream().filter(rental -> rental.getUserId().equals(userId)).toList();
+        return rentals.stream()
+                .filter(rental -> rental.getUser() != null && rental.getUser().getId().equals(userId))
+                .toList();
     }
 
     @Override
@@ -61,14 +63,14 @@ public class RentalJsonRepository implements RentalRepository {
     @Override
     public Optional<Rental> findByVehicleIdAndReturnDateIsNull(String vehicleId) {
         return rentals.stream()
-                .filter(rental -> rental.getVehicleId().equals(vehicleId) && rental.isActive())
+                .filter(rental -> rental.getVehicle() != null && rental.getVehicle().getId().equals(vehicleId) && rental.isActive())
                 .findFirst()
                 .map(Rental::copy);
     }
 
     public Optional<Rental> findActiveByUserId(String userId) {
         return rentals.stream()
-                .filter(rental -> rental.getUserId().equals(userId) && rental.isActive())
+                .filter(rental -> rental.getUser() != null && rental.getUser().getId().equals(userId) && rental.isActive())
                 .findFirst()
                 .map(Rental::copy);
     }

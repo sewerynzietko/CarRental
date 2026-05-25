@@ -1,16 +1,16 @@
 package org.example.models;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.*;
-
 import java.util.*;
 
-
-@Getter
-@Setter
-@Builder
-@ToString
-
+@Entity
+@Table(name = "vehicle")
+@Getter @Setter @Builder @ToString
 public class Vehicle {
+    @Id
     private String id;
     private String category;
     private String brand;
@@ -19,10 +19,15 @@ public class Vehicle {
     private String plate;
     private double price;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-
     private Map<String, Object> attributes;
+
+    public Vehicle() {
+        this.attributes = new HashMap<>();
+    }
 
     public Vehicle(String id,
                    String category,

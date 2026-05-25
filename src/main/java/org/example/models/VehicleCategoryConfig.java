@@ -1,20 +1,25 @@
 package org.example.models;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.*;
+import java.util.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-@Getter
-@Setter
-@NoArgsConstructor
-@ToString
+@Entity
+@Table(name = "vehicle_category_config")
+@Getter @Setter @ToString
 public class VehicleCategoryConfig {
+    @Id
     private String category;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private Map<String, String> attributes = new HashMap<>();
+
+    public VehicleCategoryConfig() {}
 
     @Builder
     public VehicleCategoryConfig(String category, Map<String, String> attributes) {

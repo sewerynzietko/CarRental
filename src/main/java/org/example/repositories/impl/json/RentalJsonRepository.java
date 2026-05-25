@@ -3,7 +3,6 @@ package org.example.repositories.impl.json;
 import com.google.gson.reflect.TypeToken;
 import org.example.db.JsonFileStorage;
 import org.example.models.Rental;
-import org.example.models.User;
 import org.example.repositories.RentalRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -34,8 +33,8 @@ public class RentalJsonRepository implements RentalRepository {
     }
 
     @Override
-    public List<Rental> findById(String userId) {
-        return rentals.stream().filter(rental -> rental.getUserId().equals(userId)).toList();
+    public List<Rental> findByUserId(String userid) {
+        return rentals.stream().filter(rental -> rental.getUserId().equals(userid)).toList();
     }
 
     @Override
@@ -61,7 +60,7 @@ public class RentalJsonRepository implements RentalRepository {
     }
 
     @Override
-    public Optional<Rental> findByVehicleIdAndReturnDateIsNull(String vehicleId) {
+    public Optional<Rental> findByVehicleIdAndReturnDateTimeIsNull(String vehicleId) {
         return rentals.stream()
                 .filter(rental -> rental.getVehicleId().equals(vehicleId) && rental.isActive())
                 .findFirst()

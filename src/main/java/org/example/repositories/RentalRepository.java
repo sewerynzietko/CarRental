@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 public interface RentalRepository {
     List<Rental> findAll();
-    List<Rental> findById(String id);
+    List<Rental> findByUserId(String userid);
     Rental save(Rental rental);
     void deleteById(String id);
-    Optional<Rental> findByVehicleIdAndReturnDateIsNull(String vehicleId);
+    Optional<Rental> findByVehicleIdAndReturnDateTimeIsNull(String vehicleId);
 }

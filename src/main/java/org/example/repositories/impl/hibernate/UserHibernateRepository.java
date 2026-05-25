@@ -27,7 +27,9 @@ public class UserHibernateRepository implements UserRepository {
 
     @Override
     public Optional<User> findByLogin ( String login ) {
-        return Optional.ofNullable(session.get(User.class, login));
+        return session.createQuery("FROM User WHERE login = :login", User.class)
+                .setParameter("login", login)
+                .uniqueResultOptional();
     }
 
     @Override

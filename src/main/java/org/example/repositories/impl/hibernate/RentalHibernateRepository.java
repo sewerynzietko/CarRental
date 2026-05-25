@@ -22,8 +22,10 @@ public class RentalHibernateRepository implements RentalRepository {
     }
 
     @Override
-    public List<Rental> findById ( String id ) {
-        return Optional.ofNullable(session.get(Rental.class, id)).stream().toList();
+    public List<Rental> findById ( String userId ) {
+        return session.createQuery("FROM Rental WHERE user.id = :userId", Rental.class)
+                .setParameter("userId", userId)
+                .list();
     }
 
     @Override

@@ -2,6 +2,10 @@ package org.example;
 
 import org.example.models.*;
 import org.example.services.*;
+import org.example.services.hibernate.AuthServiceInterface;
+import org.example.services.hibernate.RentalServiceInterface;
+import org.example.services.hibernate.UserServiceInterface;
+import org.example.services.hibernate.VehicleServiceInterface;
 
 import java.util.List;
 import java.util.Map;
@@ -9,15 +13,16 @@ import java.util.Scanner;
 
 public class UI {
 
-    private final AuthService authService;
-    private final VehicleService vehicleService;
-    private final RentalService rentalService;
-    private final UserService userService;
+    private final AuthServiceInterface authService;
+    private final VehicleServiceInterface vehicleService;
+    private final RentalServiceInterface rentalService;
+    private final UserServiceInterface userService;
     private final VehicleCategoryConfigService categoryConfigService;
     private final Scanner scanner = new Scanner(System.in);
 
-    public UI(AuthService authService, VehicleService vehicleService, RentalService rentalService,
-              UserService userService, VehicleCategoryConfigService categoryConfigService) {
+    public UI(AuthServiceInterface authService, VehicleServiceInterface vehicleService,
+              RentalServiceInterface rentalService, UserServiceInterface userService,
+              VehicleCategoryConfigService categoryConfigService) {
         this.authService = authService;
         this.vehicleService = vehicleService;
         this.rentalService = rentalService;
@@ -174,7 +179,7 @@ public class UI {
 
     private void rentVehicle(User loggedUser) {
         try {
-            if(!rentalService.findActiveRentalByUserId(loggedUser.getId()).isEmpty()) {
+            if(rentalService.findActiveRentalByUserId(loggedUser.getId()).isPresent()) {
                 throw new IllegalArgumentException("Masz aktualnie wypożyczny pojazd!");
             }
             rentalService.rentVehicle(loggedUser.getId(), readText("ID pojazdu do wypożyczenia: "));
@@ -205,9 +210,9 @@ public class UI {
                     .ifPresentOrElse(
                             rental -> {
                                 try {
-                                    System.out.println("Aktualnie wypożyczony pojazd: " + vehicleService.findById(rental.getVehicleId()));
+                                    System.out.println("Aktualnie wypożyczony pojazd: " + vehicleService.findById(rental.getVehicle().getId()));
                                 } catch (Exception e) {
-                                    System.out.println("Aktualnie wypożyczony pojazd: " + rental.getVehicleId() + " (brak szczegółów)");
+                                    System.out.println("Aktualnie wypożyczony pojazd: " + rental.getVehicle().getId() + " (brak szczegółów)");
                                 }
                             },
                             () -> System.out.println("Brak aktywnego wypożyczenia.")
@@ -281,12 +286,12 @@ public class UI {
 
         String login = "nieznany";
         try {
-            login = userService.findById(rental.getUserId()).getLogin();
+            login = userService.findById(rental.getUser().getId()).getLogin();
         } catch (Exception ignored) {}
 
         String vehicle = "nieznany";
         try {
-            vehicle = vehicleService.findById(rental.getVehicleId()).toString();
+            vehicle = vehicleService.findById(rental.getVehicle().getId()).toString();
         } catch (Exception ignored) {}
 
         System.out.println("  user: " + login);

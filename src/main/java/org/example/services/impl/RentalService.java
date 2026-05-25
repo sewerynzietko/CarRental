@@ -11,9 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
 @Service
 @Transactional
-public class RentalService implements RentalServiceInterface{
+public class RentalService implements RentalServiceInterface {
+
     private final RentalRepository rentalRepo;
     private final VehicleRepository vehicleRepo;
 
@@ -22,11 +24,11 @@ public class RentalService implements RentalServiceInterface{
         this.vehicleRepo = vehicleRepo;
     }
 
-    public Rental rentVehicle( String userId, String vehicleId) {
+    public Rental rentVehicle(String userId, String vehicleId) {
         Optional<Vehicle> vehicle = vehicleRepo.findById(vehicleId);
         if (vehicle.isEmpty()) throw new IllegalArgumentException("Pojazd nie istnieje");
 
-        boolean isAlreadyRented = rentalRepo.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
+        boolean isAlreadyRented = rentalRepo.findByVehicleIdAndReturnDateTimeIsNull(vehicleId).isPresent();
         if (isAlreadyRented) throw new IllegalArgumentException("Pojazd jest aktualnie wypożyczony");
 
         Rental rental = Rental.builder()
@@ -39,9 +41,9 @@ public class RentalService implements RentalServiceInterface{
         return rental;
     }
 
-    public Rental returnVehicle( String userId) {
-        Optional<Rental> activeRental = rentalRepo.findAll().stream()
-                .filter(r -> r.getUserId().equals(userId) && r.isActive())
+    public Rental returnVehicle(String userId) {
+        Optional<Rental> activeRental = rentalRepo.findByUserId(userId).stream()
+                .filter(Rental::isActive)
                 .findFirst();
 
         if (activeRental.isPresent()) {
@@ -53,28 +55,31 @@ public class RentalService implements RentalServiceInterface{
         throw new IllegalArgumentException("Brak aktywnego wypożyczenia.");
     }
 
-
     @Transactional(readOnly = true)
     public List<Rental> findUserRentals(String userId) {
-        return rentalRepo.findById(userId);
+        return rentalRepo.findByUserId(userId);
     }
 
     @Override
-    public boolean userHasActiveRental ( String userId ) {
-        return false;
+    @Transactional(readOnly = true)
+    public boolean userHasActiveRental(String userId) {
+        return findActiveRentalByUserId(userId).isPresent();
     }
 
     @Override
-    public boolean vehicleHasActiveRental ( String vehicleId ) {
-        return false;
+    @Transactional(readOnly = true)
+    public boolean vehicleHasActiveRental(String vehicleId) {
+        return rentalRepo.findByVehicleIdAndReturnDateTimeIsNull(vehicleId).isPresent();
     }
 
+    @Transactional(readOnly = true)
     public Optional<Rental> findActiveRentalByUserId(String userId) {
-        return rentalRepo.findAll().stream()
-                .filter(r -> r.getUserId().equals(userId) && r.isActive())
+        return rentalRepo.findByUserId(userId).stream()
+                .filter(Rental::isActive)
                 .findFirst();
     }
 
+    @Transactional(readOnly = true)
     public List<Rental> findAllRentals() {
         return rentalRepo.findAll();
     }

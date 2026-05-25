@@ -10,8 +10,8 @@ import java.util.List;
 @Service
 @Transactional
 public class UserService implements UserServiceInterface {
-    UserRepository userRepository;
-    RentalService rentalService;
+    private final UserRepository userRepository;
+    private final RentalService rentalService;
     public UserService(UserRepository userRepository, RentalService rentalService) {
         this.userRepository = userRepository;
         this.rentalService = rentalService;

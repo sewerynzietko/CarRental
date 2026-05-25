@@ -16,9 +16,9 @@ import java.util.Optional;
 @Transactional
 public class VehicleService implements VehicleServiceInterface {
 
-    private RentalRepository rentalRepository;
-    private VehicleRepository vehicleRepository;
-    private VehicleValidator vehicleValidator;
+    private final RentalRepository rentalRepository;
+    private final VehicleRepository vehicleRepository;
+    private final VehicleValidator vehicleValidator;
 
     public VehicleService(VehicleRepository vehicleRepository, RentalRepository rentalRepository, VehicleValidator vehicleValidator) {
         this.rentalRepository = rentalRepository;
@@ -40,7 +40,7 @@ public class VehicleService implements VehicleServiceInterface {
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono pojazdu."));
 
         boolean rented = rentalRepository
-                .findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
+                .findByVehicleIdAndReturnDateTimeIsNull(vehicleId).isPresent();
         if (rented) {
             throw new IllegalArgumentException("Nie można usunć pojzdu, bo jest aktualnie wypożyczony.");
         }
@@ -48,11 +48,11 @@ public class VehicleService implements VehicleServiceInterface {
     }
 
     public List<Vehicle> findAvailableVehicles() {
-        return vehicleRepository.findAll().stream().filter(v -> !rentalRepository.findByVehicleIdAndReturnDateIsNull(v.getId()).isPresent()).toList();
+        return vehicleRepository.findAll().stream().filter(v -> !rentalRepository.findByVehicleIdAndReturnDateTimeIsNull(v.getId()).isPresent()).toList();
     }
 
     public boolean isVehicleRented(String vehicleId) {
-        return rentalRepository.findByVehicleIdAndReturnDateIsNull(vehicleId).isPresent();
+        return rentalRepository.findByVehicleIdAndReturnDateTimeIsNull(vehicleId).isPresent();
     }
 
     public Vehicle findById(String vehicleId) {

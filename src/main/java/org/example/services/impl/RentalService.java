@@ -25,7 +25,7 @@ public class RentalService implements RentalServiceInterface {
     }
 
     public Rental rentVehicle(String userId, String vehicleId) {
-        Optional<Vehicle> vehicle = vehicleRepo.findById(vehicleId);
+        Optional<Vehicle> vehicle = vehicleRepo.findByVehicleId(vehicleId);
         if (vehicle.isEmpty()) throw new IllegalArgumentException("Pojazd nie istnieje");
 
         boolean isAlreadyRented = rentalRepo.findByVehicleIdAndReturnDateTimeIsNull(vehicleId).isPresent();

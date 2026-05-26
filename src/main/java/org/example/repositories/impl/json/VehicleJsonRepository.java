@@ -30,7 +30,7 @@ public class VehicleJsonRepository implements VehicleRepository {
     }
 
     @Override
-    public Optional<Vehicle> findById (String id ) {
+    public Optional<Vehicle> findByVehicleId ( String id ) {
         return vehicles.stream()
                 .filter(vehicle -> vehicle.getId().equals(id))
                 .findFirst()

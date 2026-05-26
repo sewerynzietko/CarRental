@@ -36,7 +36,7 @@ public class UserJsonRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById ( String id ) {
+    public Optional<User> findByUserId ( String id ) {
         return users.stream()
                 .filter(user -> user.getId().equals(id))
                 .findFirst()

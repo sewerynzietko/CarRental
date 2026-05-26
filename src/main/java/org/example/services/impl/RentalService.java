@@ -31,6 +31,9 @@ public class RentalService implements RentalServiceInterface {
         boolean isAlreadyRented = rentalRepo.findByVehicleIdAndReturnDateTimeIsNull(vehicleId).isPresent();
         if (isAlreadyRented) throw new IllegalArgumentException("Pojazd jest aktualnie wypożyczony");
 
+        if (findActiveRentalByUserId(userId).isPresent())
+            throw new IllegalArgumentException("Użytkownik ma aktualnie wypożyczony pojazd");
+
         Rental rental = Rental.builder()
                 .userId(userId)
                 .vehicleId(vehicleId)

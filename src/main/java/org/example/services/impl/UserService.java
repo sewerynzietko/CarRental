@@ -18,7 +18,7 @@ public class UserService implements UserServiceInterface {
     }
 
     public void deleteUser(String userId, String loggedUserId) {
-        User user = userRepository.findByUserId(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika."));
 
         if (userId.equals(loggedUserId)){
@@ -39,6 +39,6 @@ public class UserService implements UserServiceInterface {
     }
 
     public User findById(String id) {
-        return userRepository.findByUserId(id).orElseThrow();
+        return userRepository.findById(id).orElseThrow();
     }
 }

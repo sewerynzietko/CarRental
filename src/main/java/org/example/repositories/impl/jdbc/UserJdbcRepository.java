@@ -35,7 +35,7 @@ public class UserJdbcRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByUserId ( String id ) {
+    public Optional<User> findById ( String id ) {
         String sql = "SELECT * FROM users WHERE id = ?";
         try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {

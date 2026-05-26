@@ -1,5 +1,6 @@
 package org.example.services.impl;
 
+import org.example.models.Rental;
 import org.example.models.Vehicle;
 import org.example.repositories.RentalRepository;
 import org.example.repositories.VehicleRepository;
@@ -9,7 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+import java.util.Map;
+import java.util.Optional;
 @Service
 @Transactional
 public class VehicleService implements VehicleServiceInterface {
@@ -34,7 +36,7 @@ public class VehicleService implements VehicleServiceInterface {
     }
 
     public void removeVehicle(String vehicleId) {
-        Vehicle vehicle = vehicleRepository.findByVehicleId(vehicleId)
+        Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono pojazdu."));
 
         boolean rented = rentalRepository
@@ -54,6 +56,6 @@ public class VehicleService implements VehicleServiceInterface {
     }
 
     public Vehicle findById(String vehicleId) {
-        return vehicleRepository.findByVehicleId(vehicleId).orElseThrow();
+        return vehicleRepository.findById(vehicleId).orElseThrow();
     }
 }

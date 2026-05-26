@@ -42,7 +42,7 @@ public class VehicleJdbcRepository implements VehicleRepository {
     }
 
     @Override
-    public Optional<Vehicle> findByVehicleId ( String id) {
+    public Optional<Vehicle> findById(String id) {
         String sql = "SELECT * FROM vehicle WHERE id = ?";
         try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {

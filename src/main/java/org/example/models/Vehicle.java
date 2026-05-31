@@ -11,6 +11,7 @@ import java.util.*;
 @Getter @Setter @Builder @ToString
 public class Vehicle {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String category;
     private String brand;

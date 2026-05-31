@@ -6,6 +6,7 @@ import org.example.db.JdbcConnectionManager;
 import org.example.models.Vehicle;
 import org.example.repositories.VehicleRepository;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -20,15 +21,25 @@ import java.util.*;
 @Profile("jdbc")
 
 public class VehicleJdbcRepository implements VehicleRepository {
+
+    private final DataSource dataSource;
+
+    public VehicleJdbcRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    private Connection getConnection() {
+        return DataSourceUtils.getConnection(dataSource);
+    }
+
     private final Gson gson = new Gson();
     private final Type mapType = new TypeToken<Map<String, Object>>() {}.getType();
     @Override
     public List<Vehicle> findAll () {
         List<Vehicle> vehicles = new ArrayList<>();
         String sql = "SELECT id, category, brand, model, year, plate, price, attributes FROM vehicle";
-
-        try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql);
+        Connection connection = getConnection();
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -36,6 +47,8 @@ public class VehicleJdbcRepository implements VehicleRepository {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error occurred while reading vehicles", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
 
         return vehicles;
@@ -44,8 +57,8 @@ public class VehicleJdbcRepository implements VehicleRepository {
     @Override
     public Optional<Vehicle> findById(String id) {
         String sql = "SELECT * FROM vehicle WHERE id = ?";
-        try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection connection = getConnection();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -67,6 +80,8 @@ public class VehicleJdbcRepository implements VehicleRepository {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error occurred while reading vehicle", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
         return Optional.empty();
     }
@@ -83,8 +98,8 @@ public class VehicleJdbcRepository implements VehicleRepository {
                 "category = EXCLUDED.category, brand = EXCLUDED.brand, model = EXCLUDED.model, " +
                 "year = EXCLUDED.year, plate = EXCLUDED.plate, price = EXCLUDED.price, attributes = EXCLUDED.attributes";
 
-        try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection connection = getConnection();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, vehicle.getId());
             stmt.setString(2, vehicle.getCategory());
             stmt.setString(3, vehicle.getBrand());
@@ -96,6 +111,8 @@ public class VehicleJdbcRepository implements VehicleRepository {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error occurred while saving vehicle", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
         return vehicle;
     }
@@ -103,12 +120,14 @@ public class VehicleJdbcRepository implements VehicleRepository {
     @Override
     public void deleteById(String id) {
         String sql = "DELETE FROM vehicle WHERE id = ?";
-        try (Connection connection = JdbcConnectionManager.getInstance().getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
+        Connection connection = getConnection();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error occurred while deleting vehicle", e);
+        } finally {
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 

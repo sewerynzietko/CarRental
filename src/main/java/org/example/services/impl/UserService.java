@@ -1,6 +1,7 @@
 package org.example.services.impl;
 
 import org.example.models.User;
+import org.example.models.Vehicle;
 import org.example.repositories.UserRepository;
 import org.example.services.UserServiceInterface;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,11 @@ public class UserService implements UserServiceInterface {
         }
 
         userRepository.deleteById(user.getId());
+    }
+
+    @Override
+    public User findByLogin ( String login ) {
+        return userRepository.findByLogin(login).orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika."));
     }
 
     @Transactional(readOnly = true)

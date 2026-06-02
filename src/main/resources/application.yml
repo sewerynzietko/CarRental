@@ -7,6 +7,10 @@ spring:
 server:
   port: 10000
 
+jwt:
+  secret: ${JWT_SECRET:5Sy1-R-Zj7ajgcabswkEttARiS8Q4Vs9IhYCVAt1bQ0}
+  expiration: ${JWT_EXPIRATION:3600000}
+
 carrent:
   json:
     users-file: users.json

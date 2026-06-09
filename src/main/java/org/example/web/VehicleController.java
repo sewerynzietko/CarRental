@@ -1,7 +1,9 @@
 package org.example.web;
 
+import org.example.dto.VehicleRequest;
 import org.example.models.Vehicle;
 import org.example.services.VehicleServiceInterface;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,17 +31,17 @@ public class VehicleController {
                 ? vehicleService.findAvailableVehicles()
                 : vehicleService.findAllVehicles();
     }
-    @GetMapping("/{id}")
-    public Vehicle get(@PathVariable String id) {
-        return vehicleService.findById(id);
+    @GetMapping("/id")
+    public ResponseEntity<Vehicle> get( @RequestBody VehicleRequest vehicleRequest ) {
+        return ResponseEntity.status(HttpStatus.OK).body(vehicleService.findById(vehicleRequest.vehicleId()));
     }
     @PostMapping
     public Vehicle create(@RequestBody Vehicle vehicle) {
         return vehicleService.addVehicle(vehicle);
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
-        vehicleService.removeVehicle(id);
+    @DeleteMapping("/id")
+    public ResponseEntity<Void> delete(@RequestBody VehicleRequest vehicleRequest) {
+        vehicleService.removeVehicle(vehicleRequest.vehicleId());
         return ResponseEntity.noContent().build();
     }
 }

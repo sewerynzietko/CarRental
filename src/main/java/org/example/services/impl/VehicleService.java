@@ -56,6 +56,6 @@ public class VehicleService implements VehicleServiceInterface {
     }
 
     public Vehicle findById(String vehicleId) {
-        return vehicleRepository.findById(vehicleId).orElseThrow();
+        return vehicleRepository.findById(vehicleId).orElseThrow(() -> new IllegalArgumentException("Nie znaleziono pojazdu."));
     }
 }

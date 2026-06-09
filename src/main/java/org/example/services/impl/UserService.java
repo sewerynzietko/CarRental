@@ -45,6 +45,6 @@ public class UserService implements UserServiceInterface {
     }
 
     public User findById(String id) {
-        return userRepository.findById(id).orElseThrow();
+        return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika."));
     }
 }

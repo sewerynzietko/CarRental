@@ -2,6 +2,7 @@ package org.example.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -27,26 +28,26 @@ public class SecurityConfig {
             AuthenticationProvider authProvider
     ) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .formLogin(form -> form.disable())
-                .httpBasic(basic -> basic.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers(r -> r.getMethod().equals("POST") &&
-                                r.getRequestURI().startsWith("/api/vehicles"))
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS
-                        )
-                )
-                .authenticationProvider(authProvider)
-                .addFilterBefore(
-                        jwtAuthFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                );
+            .csrf(csrf -> csrf.disable())
+            .formLogin(form -> form.disable())
+            .httpBasic(basic -> basic.disable())
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.POST,"/api/vehicles/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE,"/api/vehicles/**").hasRole("ADMIN")
+                    .anyRequest().authenticated()
+            )
+            .sessionManagement(session ->
+                    session.sessionCreationPolicy(
+                            SessionCreationPolicy.STATELESS
+                    )
+            )
+            .authenticationProvider(authProvider)
+            .addFilterBefore(
+                    jwtAuthFilter,
+                    UsernamePasswordAuthenticationFilter.class
+            );
         return http.build();
     }
     @Bean

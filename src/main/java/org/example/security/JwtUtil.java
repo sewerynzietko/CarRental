@@ -14,6 +14,7 @@ import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -24,7 +25,7 @@ public class JwtUtil {
     private long expirationMs;
     public String generateToken( UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", getUserRole(userDetails));
+        claims.put("role", getUserRoles(userDetails));
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + expirationMs);
         return Jwts.builder()
@@ -63,11 +64,9 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private String getUserRole(UserDetails userDetails){
+    private List<String> getUserRoles( UserDetails userDetails) {
         return userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .findFirst()
-                .orElse("USER");
+                .toList();
     }
-
 }

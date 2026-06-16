@@ -3,7 +3,9 @@ package org.example.web;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.LoginRequest;
 import org.example.dto.LoginResponse;
+import org.example.dto.RegisterRequest;
 import org.example.security.JwtUtil;
+import org.example.services.impl.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final UserService userService;
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest loginRequest) {
@@ -38,5 +41,19 @@ public class AuthController {
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
         String token = jwtUtil.generateToken(userDetails);
         return ResponseEntity.ok(new LoginResponse(token));
+    }
+    @PostMapping("/register")
+    public ResponseEntity<?> register(
+            @RequestBody RegisterRequest request) {
+        try {
+            userService.register(request.login(), request.password());
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("Registered successfully");
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(ex.getMessage());
+        }
     }
 }

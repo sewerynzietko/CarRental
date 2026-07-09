@@ -8,15 +8,18 @@ import java.time.LocalDateTime;
 @Table(name = "rental")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Rental {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false)
-    private String vehicleId;
+    @ManyToOne
+    @JoinColumn(name = "vehicle_id", nullable = false)
+    private Vehicle vehicle;
 
-    @Column(nullable = false)
-    private String userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "rent_date", nullable = false)
     private LocalDateTime rentDateTime;
@@ -24,13 +27,21 @@ public class Rental {
     @Column(name = "return_date")
     private LocalDateTime returnDateTime;
 
-    public Rental copy(){
+    @OneToOne(
+            mappedBy = "rental",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER
+    )
+    private Payment payment;
+
+    public Rental copy() {
         return Rental.builder()
                 .id(id)
-                .vehicleId(vehicleId)
-                .userId(userId)
+                .vehicle(vehicle)
+                .user(user)
                 .rentDateTime(rentDateTime)
                 .returnDateTime(returnDateTime)
+                .payment(payment)
                 .build();
     }
 

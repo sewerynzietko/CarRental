@@ -1,5 +1,7 @@
 package org.example.services.impl;
 
+import org.example.dto.AddressRequest;
+import org.example.models.Address;
 import org.example.models.Role;
 import org.example.models.User;
 import org.example.repositories.RoleRepository;
@@ -58,7 +60,7 @@ public class UserService implements UserServiceInterface {
     public User findById(String id) {
         return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Nie znaleziono użytkownika."));
     }
-    public void register(String login, String password) {
+    public void register(String login, String password, String city, String street, String postalCode) {
         if (login == null || login.isBlank()) {
             throw new IllegalArgumentException("Login nie może być pusty.");
         }
@@ -70,12 +72,39 @@ public class UserService implements UserServiceInterface {
         }
         Role userRole = roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new IllegalStateException("Brak ROLE_USER."));
+
+        Address address = null;
+        if (city != null && street != null && postalCode != null) {
+            address = Address.builder()
+                    .city(city)
+                    .street(street)
+                    .postalCode(postalCode)
+                    .build();
+        }
+
         User user = User.builder()
                 .id(UUID.randomUUID().toString())
                 .login(login)
                 .passwordHash(passwordEncoder.encode(password))
+                .address(address)
                 .roles(Set.of(userRole))
                 .build();
+        userRepository.save(user);
+    }
+
+    public void updateAddress(String login, AddressRequest addressRequest) {
+        User user = findByLogin(login);
+
+        Address address = user.getAddress();
+        if (address == null) {
+            address = new Address();
+        }
+
+        if (addressRequest.city() != null) address.setCity(addressRequest.city());
+        if (addressRequest.street() != null) address.setStreet(addressRequest.street());
+        if (addressRequest.postalCode() != null) address.setPostalCode(addressRequest.postalCode());
+
+        user.setAddress(address);
         userRepository.save(user);
     }
 }

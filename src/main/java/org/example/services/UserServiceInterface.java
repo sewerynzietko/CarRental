@@ -1,6 +1,7 @@
 package org.example.services;
 
 
+import org.example.dto.AddressRequest;
 import org.example.models.User;
 
 import java.util.List;
@@ -14,4 +15,6 @@ public interface UserServiceInterface {
     void deleteUser(String id, String loggedUserId);
 
     User findByLogin(String login);
+
+    void updateAddress(String login, AddressRequest addressRequest);
 }

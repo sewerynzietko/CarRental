@@ -20,6 +20,9 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
+    @Embedded
+    private Address address;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -33,9 +36,14 @@ public class User {
                 .id(id)
                 .login(login)
                 .passwordHash(passwordHash)
+                .address(address != null ? Address.builder()
+                        .city(address.getCity())
+                        .street(address.getStreet())
+                        .postalCode(address.getPostalCode())
+                        .build() : null)
                 .roles(roles == null
-                    ? new HashSet<>()
-                    : new HashSet<>(roles))
+                        ? new HashSet<>()
+                        : new HashSet<>(roles))
                 .build();
     }
 }

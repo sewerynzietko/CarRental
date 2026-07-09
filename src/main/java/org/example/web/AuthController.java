@@ -46,7 +46,13 @@ public class AuthController {
     public ResponseEntity<?> register(
             @RequestBody RegisterRequest request) {
         try {
-            userService.register(request.login(), request.password());
+            userService.register(
+                    request.login(),
+                    request.password(),
+                    request.city(),
+                    request.street(),
+                    request.postalCode()
+            );
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body("Registered successfully");

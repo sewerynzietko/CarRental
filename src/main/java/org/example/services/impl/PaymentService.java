@@ -13,6 +13,7 @@ import org.example.models.Rental;
 import org.example.repositories.RentalRepository;
 import org.example.services.PaymentRepository;
 import org.example.services.PaymentServiceInterface;
+import org.example.services.VehicleLocationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ public class PaymentService implements PaymentServiceInterface {
 
     private final RentalRepository rentalRepository;
     private final PaymentRepository paymentRepository;
+    private final VehicleLocationService vehicleLocationService;
 
     @Value("${stripe.api-key}")
     private String apiKey;
@@ -39,9 +41,10 @@ public class PaymentService implements PaymentServiceInterface {
     @Value("${stripe.cancel-url}")
     private String cancelUrl;
 
-    public PaymentService(RentalRepository rentalRepository, PaymentRepository paymentRepository) {
+    public PaymentService(RentalRepository rentalRepository, PaymentRepository paymentRepository, VehicleLocationService vehicleLocationService) {
         this.rentalRepository = rentalRepository;
         this.paymentRepository = paymentRepository;
+        this.vehicleLocationService = vehicleLocationService;
     }
 
     @Override
@@ -53,11 +56,12 @@ public class PaymentService implements PaymentServiceInterface {
             throw new IllegalStateException("To wypożyczenie zostało już zakończone.");
         }
 
+        vehicleLocationService.validateReturnLocation(rental.getVehicle().getId());
+
         LocalDateTime start = rental.getRentDateTime();
         LocalDateTime end = LocalDateTime.now();
 
         long days = java.time.temporal.ChronoUnit.DAYS.between(start, end);
-
         if (start.plusDays(days).isBefore(end)) {
             days++;
         }
@@ -65,7 +69,6 @@ public class PaymentService implements PaymentServiceInterface {
         if (days < 1) {
             days = 1;
         }
-
         double pricePerDay = rental.getVehicle().getPrice();
         long totalAmountInCents = Math.round(pricePerDay * days * 100);
 

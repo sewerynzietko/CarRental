@@ -7,6 +7,7 @@ import org.example.repositories.RentalRepository;
 import org.example.repositories.UserRepository;
 import org.example.repositories.VehicleRepository;
 import org.example.services.RentalServiceInterface;
+import org.example.services.VehicleLocationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +22,13 @@ public class RentalService implements RentalServiceInterface {
     private final RentalRepository rentalRepo;
     private final VehicleRepository vehicleRepo;
     private final UserRepository userRepo;
+    private final VehicleLocationService locationService;
 
-    public RentalService(RentalRepository rentalRepo, VehicleRepository vehicleRepo, UserRepository userRepo) {
+    public RentalService(RentalRepository rentalRepo, VehicleRepository vehicleRepo, UserRepository userRepo, VehicleLocationService locationService) {
         this.rentalRepo = rentalRepo;
         this.vehicleRepo = vehicleRepo;
         this.userRepo = userRepo;
+        this.locationService = locationService;
     }
 
     public Rental rentVehicle(String userId, String vehicleId) {
@@ -57,6 +60,9 @@ public class RentalService implements RentalServiceInterface {
 
         if (activeRental.isPresent()) {
             Rental rental = activeRental.get();
+
+            locationService.validateReturnLocation(rental.getVehicle().getId());
+
             rental.setReturnDateTime(LocalDateTime.now());
             rentalRepo.save(rental);
             return rental;

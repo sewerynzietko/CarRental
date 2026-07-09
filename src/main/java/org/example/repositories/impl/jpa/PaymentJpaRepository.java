@@ -1,4 +1,4 @@
-package org.example.repositories;
+package org.example.repositories.impl.jpa;
 
 import org.example.models.Payment;
 import org.springframework.context.annotation.Profile;

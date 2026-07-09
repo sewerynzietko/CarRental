@@ -41,6 +41,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/users/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST,"/api/vehicles/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE,"/api/vehicles/**").hasRole("ADMIN")
+                    .requestMatchers("/api/vehicles/*/location").hasRole("ADMIN")
                     .anyRequest().authenticated()
             )
             .sessionManagement(session ->

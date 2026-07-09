@@ -14,7 +14,5 @@ jwt:
 stripe:
   api-key: ${STRIPE_API_KEY}
   webhook-secret: ${WEBHOOK_SECRET}
-  success-url: ${STRIPE_SUCCESS_URL:http://localhost:${PORT:8080}
-    /api/payments/success?session_id
-    ={CHECKOUT_SESSION_ID}}
-  cancel-url: ${STRIPE_CANCEL_URL:http://localhost:${PORT:8080}/api/payments/cancel}
+  success-url: ${STRIPE_SUCCESS_URL:http://localhost:${PORT:10000}/api/payments/success?session_id={CHECKOUT_SESSION_ID}}
+  cancel-url: ${STRIPE_CANCEL_URL:http://localhost:${PORT:10000}/api/payments/cancel}

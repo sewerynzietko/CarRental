@@ -1,8 +1,10 @@
 package org.example.services.impl;
 
 import org.example.models.Rental;
+import org.example.models.User;
 import org.example.models.Vehicle;
 import org.example.repositories.RentalRepository;
+import org.example.repositories.UserRepository;
 import org.example.repositories.VehicleRepository;
 import org.example.services.RentalServiceInterface;
 import org.springframework.stereotype.Service;
@@ -18,15 +20,19 @@ public class RentalService implements RentalServiceInterface {
 
     private final RentalRepository rentalRepo;
     private final VehicleRepository vehicleRepo;
+    private final UserRepository userRepo;
 
-    public RentalService(RentalRepository rentalRepo, VehicleRepository vehicleRepo) {
+    public RentalService(RentalRepository rentalRepo, VehicleRepository vehicleRepo, UserRepository userRepo) {
         this.rentalRepo = rentalRepo;
         this.vehicleRepo = vehicleRepo;
+        this.userRepo = userRepo;
     }
 
     public Rental rentVehicle(String userId, String vehicleId) {
-        Optional<Vehicle> vehicle = vehicleRepo.findById(vehicleId);
-        if (vehicle.isEmpty()) throw new IllegalArgumentException("Pojazd nie istnieje");
+        Vehicle vehicle = vehicleRepo.findById(vehicleId)
+                .orElseThrow(() -> new IllegalArgumentException("Pojazd nie istnieje"));
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Użytkownik nie istnieje"));
 
         boolean isAlreadyRented = rentalRepo.findByVehicleIdAndReturnDateTimeIsNull(vehicleId).isPresent();
         if (isAlreadyRented) throw new IllegalArgumentException("Pojazd jest aktualnie wypożyczony");
@@ -35,8 +41,8 @@ public class RentalService implements RentalServiceInterface {
             throw new IllegalArgumentException("Użytkownik ma aktualnie wypożyczony pojazd");
 
         Rental rental = Rental.builder()
-                .userId(userId)
-                .vehicleId(vehicleId)
+                .user(user)
+                .vehicle(vehicle)
                 .rentDateTime(LocalDateTime.now())
                 .build();
 

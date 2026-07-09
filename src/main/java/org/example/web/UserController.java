@@ -25,6 +25,11 @@ public class UserController {
     public ResponseEntity<User> get( @RequestBody UserRequest userRequest ) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.findById(userRequest.userId()));
     }
+    @GetMapping("/me")
+    public ResponseEntity<User> getMyProfile(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findByLogin(userDetails.getUsername()));
+    }
+
     @PatchMapping("/me/address")
     public ResponseEntity<Void> updateAddress(
             @RequestBody AddressRequest addressRequest,

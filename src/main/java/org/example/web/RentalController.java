@@ -31,6 +31,11 @@ public class RentalController {
     public ResponseEntity<List<Rental>> userRentals( @RequestBody UserRequest userRequest ){
         return ResponseEntity.status(HttpStatus.OK).body(rentalService.findUserRentals(userRequest.userId()));
     }
+    @GetMapping("/me")
+    public ResponseEntity<List<Rental>> getMyRentals(@AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.findByLogin(userDetails.getUsername());
+        return ResponseEntity.status(HttpStatus.OK).body(rentalService.findUserRentals(user.getId()));
+    }
     @PostMapping("/rent")
     public ResponseEntity<Rental> rent(
             @RequestBody RentalRequest rentalRequest,

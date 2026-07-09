@@ -33,7 +33,12 @@ public class SecurityConfig {
             .httpBasic(basic -> basic.disable())
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/health").permitAll()
+                    .requestMatchers("/api/payments/webhook").permitAll()
+                    .requestMatchers("/api/payments/success").permitAll()
+                    .requestMatchers("/api/payments/cancel").permitAll()
                     .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/api/users/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST,"/api/vehicles/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE,"/api/vehicles/**").hasRole("ADMIN")
                     .anyRequest().authenticated()

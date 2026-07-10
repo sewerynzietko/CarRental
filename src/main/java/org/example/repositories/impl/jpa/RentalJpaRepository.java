@@ -15,5 +15,4 @@ public interface RentalJpaRepository extends JpaRepository<Rental, String>, Rent
 
     List<Rental> findByUserId(String userId);
     Rental save(Rental rental);
-    Optional<Rental> findByVehicleIdAndReturnDateTimeIsNull(String vehicleId);
 }

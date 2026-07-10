@@ -11,5 +11,4 @@ public interface RentalRepository {
     List<Rental> findByUserId(String userid);
     Rental save(Rental rental);
     void deleteById(String id);
-    Optional<Rental> findByVehicleIdAndReturnDateTimeIsNull(String vehicleId);
 }

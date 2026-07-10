@@ -37,11 +37,15 @@ public class RentalService implements RentalServiceInterface {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Użytkownik nie istnieje"));
 
-        boolean isAlreadyRented = rentalRepo.findByVehicleIdAndReturnDateTimeIsNull(vehicleId).isPresent();
-        if (isAlreadyRented) throw new IllegalArgumentException("Pojazd jest aktualnie wypożyczony");
+        if (vehicle.isRented()) {
+            throw new IllegalArgumentException("Pojazd jest aktualnie wypożyczony");
+        }
 
         if (findActiveRentalByUserId(userId).isPresent())
             throw new IllegalArgumentException("Użytkownik ma aktualnie wypożyczony pojazd");
+
+        vehicle.setRented(true);
+        vehicleRepo.save(vehicle);
 
         Rental rental = Rental.builder()
                 .user(user)
@@ -62,6 +66,10 @@ public class RentalService implements RentalServiceInterface {
             Rental rental = activeRental.get();
 
             locationService.validateReturnLocation(rental.getVehicle().getId());
+
+            Vehicle vehicle = rental.getVehicle();
+            vehicle.setRented(false);
+            vehicleRepo.save(vehicle);
 
             rental.setReturnDateTime(LocalDateTime.now());
             rentalRepo.save(rental);
@@ -84,7 +92,9 @@ public class RentalService implements RentalServiceInterface {
     @Override
     @Transactional(readOnly = true)
     public boolean vehicleHasActiveRental(String vehicleId) {
-        return rentalRepo.findByVehicleIdAndReturnDateTimeIsNull(vehicleId).isPresent();
+        return vehicleRepo.findById(vehicleId)
+                .map(Vehicle::isRented)
+                .orElse(false);
     }
 
     @Transactional(readOnly = true)

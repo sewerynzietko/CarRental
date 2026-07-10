@@ -11,6 +11,7 @@ import org.example.models.Payment;
 import org.example.models.PaymentStatus;
 import org.example.models.Rental;
 import org.example.repositories.RentalRepository;
+import org.example.repositories.VehicleRepository;
 import org.example.services.PaymentRepository;
 import org.example.services.PaymentServiceInterface;
 import org.example.services.VehicleLocationService;
@@ -28,6 +29,7 @@ public class PaymentService implements PaymentServiceInterface {
     private final RentalRepository rentalRepository;
     private final PaymentRepository paymentRepository;
     private final VehicleLocationService vehicleLocationService;
+    private final VehicleRepository vehicleRepository;
 
     @Value("${stripe.api-key}")
     private String apiKey;
@@ -41,10 +43,11 @@ public class PaymentService implements PaymentServiceInterface {
     @Value("${stripe.cancel-url}")
     private String cancelUrl;
 
-    public PaymentService(RentalRepository rentalRepository, PaymentRepository paymentRepository, VehicleLocationService vehicleLocationService) {
+    public PaymentService(RentalRepository rentalRepository, PaymentRepository paymentRepository, VehicleLocationService vehicleLocationService, VehicleRepository vehicleRepository) {
         this.rentalRepository = rentalRepository;
         this.paymentRepository = paymentRepository;
         this.vehicleLocationService = vehicleLocationService;
+        this.vehicleRepository = vehicleRepository;
     }
 
     @Override
@@ -156,6 +159,10 @@ public class PaymentService implements PaymentServiceInterface {
                         Rental rental = payment.getRental();
                         rental.setReturnDateTime(LocalDateTime.now());
                         rentalRepository.save(rental);
+
+                        org.example.models.Vehicle vehicle = rental.getVehicle();
+                        vehicle.setRented(false);
+                        vehicleRepository.save(vehicle);
 
                         System.out.println("Płatność zaktualizowana pomyślnie dla sesji: " + stripeSessionId);
                     }, () -> System.err.println("Nie znaleziono płatności dla sesji: " + stripeSessionId));

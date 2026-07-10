@@ -39,20 +39,20 @@ public class VehicleService implements VehicleServiceInterface {
         Vehicle vehicle = vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono pojazdu."));
 
-        boolean rented = rentalRepository
-                .findByVehicleIdAndReturnDateTimeIsNull(vehicleId).isPresent();
-        if (rented) {
-            throw new IllegalArgumentException("Nie można usunć pojzdu, bo jest aktualnie wypożyczony.");
+        if (vehicle.isRented()) {
+            throw new IllegalArgumentException("Nie można usunąć pojazdu, bo jest aktualnie wypożyczony.");
         }
         vehicleRepository.deleteById(vehicle.getId());
     }
 
     public List<Vehicle> findAvailableVehicles() {
-        return vehicleRepository.findAll().stream().filter(v -> !rentalRepository.findByVehicleIdAndReturnDateTimeIsNull(v.getId()).isPresent()).toList();
+        return vehicleRepository.findAll().stream()
+                .filter(v -> !v.isRented())
+                .toList();
     }
 
     public boolean isVehicleRented(String vehicleId) {
-        return rentalRepository.findByVehicleIdAndReturnDateTimeIsNull(vehicleId).isPresent();
+        return findById(vehicleId).isRented();
     }
 
     public Vehicle findById(String vehicleId) {

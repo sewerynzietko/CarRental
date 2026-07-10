@@ -21,9 +21,9 @@ public class UserController {
     }
     @GetMapping
     public List<User> list() {return userService.findAllUsers();}
-    @GetMapping("/id")
-    public ResponseEntity<User> get( @RequestBody UserRequest userRequest ) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.findById(userRequest.userId()));
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable("id") String id) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findById(id));
     }
     @GetMapping("/me")
     public ResponseEntity<User> getMyProfile(@AuthenticationPrincipal UserDetails userDetails) {

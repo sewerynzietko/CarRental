@@ -31,17 +31,17 @@ public class VehicleController {
                 ? vehicleService.findAvailableVehicles()
                 : vehicleService.findAllVehicles();
     }
-    @GetMapping("/id")
-    public ResponseEntity<Vehicle> get( @RequestBody VehicleRequest vehicleRequest ) {
-        return ResponseEntity.status(HttpStatus.OK).body(vehicleService.findById(vehicleRequest.vehicleId()));
+    @GetMapping("/{id}")
+    public ResponseEntity<Vehicle> getVehicle(@PathVariable("id") String id) {
+        return ResponseEntity.status(HttpStatus.OK).body(vehicleService.findById(id));
     }
     @PostMapping
     public Vehicle create(@RequestBody Vehicle vehicle) {
         return vehicleService.addVehicle(vehicle);
     }
-    @DeleteMapping("/id")
-    public ResponseEntity<Void> delete(@RequestBody VehicleRequest vehicleRequest) {
-        vehicleService.removeVehicle(vehicleRequest.vehicleId());
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteVehicle(@PathVariable("id") String id) {
+        vehicleService.removeVehicle(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,6 +1,7 @@
 package org.example.web;
 
 import org.example.dto.RentalRequest;
+import org.example.dto.RentalResponse;
 import org.example.dto.UserRequest;
 import org.example.models.Rental;
 import org.example.models.User;
@@ -24,17 +25,33 @@ public class RentalController {
         this.userService = userService;
     }
     @GetMapping
-    public List<Rental> list(){
-        return rentalService.findAllRentals();
+    public ResponseEntity<List<RentalResponse>> list() {
+        List<RentalResponse> response = rentalService.findAllRentals().stream()
+                .map(RentalResponse::fromEntity)
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    @GetMapping("/user")
-    public ResponseEntity<List<Rental>> userRentals( @RequestBody UserRequest userRequest ){
-        return ResponseEntity.status(HttpStatus.OK).body(rentalService.findUserRentals(userRequest.userId()));
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<RentalResponse>> userRentals(@PathVariable("userId") String userId) {
+
+        List<Rental> rentals = rentalService.findUserRentals(userId);
+
+        List<RentalResponse> response = rentals.stream()
+                .map(RentalResponse::fromEntity)
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @GetMapping("/me")
-    public ResponseEntity<List<Rental>> getMyRentals(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<List<RentalResponse>> getMyRentals(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.findByLogin(userDetails.getUsername());
-        return ResponseEntity.status(HttpStatus.OK).body(rentalService.findUserRentals(user.getId()));
+
+        List<RentalResponse> response = rentalService.findUserRentals(user.getId()).stream()
+                .map(RentalResponse::fromEntity)
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @PostMapping("/rent")
     public ResponseEntity<Rental> rent(

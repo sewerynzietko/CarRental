@@ -26,6 +26,9 @@ public class Vehicle {
     @Setter(AccessLevel.NONE)
     private Map<String, Object> attributes;
 
+    @Column(name = "is_rented", nullable = false)
+    private boolean isRented;
+
     public Vehicle() {
         this.attributes = new HashMap<>();
     }
@@ -37,7 +40,8 @@ public class Vehicle {
                    int year,
                    String plate,
                    double price,
-                   Map<String, Object> attributes) {
+                   Map<String, Object> attributes,
+                   boolean isRented) {
         this.id = id;
         this.category = category;
         this.brand = brand;
@@ -46,6 +50,7 @@ public class Vehicle {
         this.plate = plate;
         this.price = price;
         this.attributes = attributes == null ? new HashMap<>() : new HashMap<>(attributes);
+        this.isRented = isRented;
     }
 
     public Map<String, Object> getAttributes(){
@@ -70,6 +75,7 @@ public class Vehicle {
                 .plate(plate)
                 .price(price)
                 .attributes(new HashMap<>(attributes))
+                .isRented(isRented)
                 .build();
     }
 }
